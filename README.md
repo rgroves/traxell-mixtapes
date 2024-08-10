@@ -1,50 +1,24 @@
-# React + TypeScript + Vite
+# Traxell Mixtapes
+This project was originally built for the Learn With Jason [Web Dev Challenge Hackathon (E-comm Edition)](https://www.learnwithjason.dev/blog/web-dev-challenge-hackathon-algolia).
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The goal of the hackathon was to build out an e-commerce site (with a twist) using technology from [Algolia](https://www.algolia.com/) - "the one-stop shop for AI search."
 
-Currently, two official plugins are available:
+My idea was to build a music e-comm site. The twist to this site is that the "shopping cart" is limited to a mixtape in size. A shopper would go into the experience knowing that they have a 60-minute mixtape to fill (a 30 minute A-Side and 30 minute B-Side). They'll have to choose a name for their mix and carefully [curate the perfect selection of songs](https://www.youtube.com/watch?v=wV7ORIKMCa8&t=26s).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## MVP
 
-## Expanding the ESLint configuration
+- Guests (non-authenticated) can build and view mixtapes, but cannot save mixtapes.
+- Users (authenticated) can build, view, and save mixtapes.
+- Music selection limited to sampling from only one genre / time-period of music to limit data for the demo
+- Mock purchasability
+- Easter 🥚🥚🥚🥚? Of course.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Future Possibilities
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+- Wider music selection
+- Edit mixtapes
+- Allow shopper to switch between mixtape lengths: 60-minute, 90-minute, and 120-minute.
+- Compare two mixtapes
+- Create mixtape from existing
+- Music library integration
+- Music Platform integrations
