@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./App.css";
+import { Search } from "./components/algolia/Search";
 import TrackSlot from "./components/TrackSlot";
 import TrackSlotList from "./components/TrackSlotList";
 
@@ -58,6 +59,8 @@ function App() {
             00&apos;s Rap/Hip Hop/R&B
           </em>
         </p>
+
+        <Search />
       </main>
     </>
   );
