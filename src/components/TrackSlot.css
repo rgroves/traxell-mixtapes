@@ -1,0 +1,77 @@
+.track-slot {
+  display: grid;
+  border-bottom: 1px white dashed;
+  text-align: left;
+  padding: 0;
+}
+
+.track-slot-search {
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto;
+  grid-template-areas: "track-number track-search";
+}
+
+.track-search {
+  grid-area: track-search;
+}
+
+.track-slot-song {
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "track-number track-name track-duration"
+    "track-number track-artist track-duration"
+    "track-number track-album track-duration";
+  justify-items: start;
+  align-items: start;
+  justify-content: start;
+  gap: 0.5ch;
+  line-height: 1.1rem;
+  font-family: cursive;
+}
+
+.track-slot-empty {
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto;
+  grid-template-areas: "track-number";
+}
+
+.track-number {
+  grid-area: track-number;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.track-name {
+  grid-area: track-name;
+  font-weight: bolder;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 100%;
+  width: 100%;
+}
+
+.track-artist {
+  grid-area: track-artist;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.track-album {
+  grid-area: track-album;
+  font-style: italic;
+  font-weight: lighter;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.track-duration {
+  grid-area: track-duration;
+  font-size: 0.65rem;
+  font-weight: lighter;
+  align-self: self-start;
+}

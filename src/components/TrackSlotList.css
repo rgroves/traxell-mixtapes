@@ -1,0 +1,15 @@
+.track-slots-container {
+  border: 0.5ch solid white;
+  margin: 1rem;
+}
+
+.track-slots-container h3 {
+  margin: 0;
+  padding: 1.25rem;
+  background-color: black;
+}
+
+.track-slots {
+  margin: 1rem;
+  padding: 0;
+}

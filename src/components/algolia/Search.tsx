@@ -1,5 +1,4 @@
 import algoliasearch from "algoliasearch/lite";
-// import "instantsearch.css/themes/satellite.css";
 import "instantsearch.css/themes/algolia.css";
 import { Hits, InstantSearch, SearchBox, Configure } from "react-instantsearch";
 
@@ -18,7 +17,10 @@ export const Search = () => {
     >
       <Configure hitsPerPage={5} />
       <div className="ais-InstantSearch">
-        <SearchBox />
+        <SearchBox
+          autoFocus={true}
+          placeholder="Search for song title, artist, or album"
+        />
         <Hits hitComponent={Hit} />
       </div>
     </InstantSearch>

@@ -1,52 +1,75 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./App.css";
-import { Search } from "./components/algolia/Search";
-import TrackSlot from "./components/TrackSlot";
+import TrackSlot, { type ITrackSlot } from "./components/TrackSlot";
 import TrackSlotList from "./components/TrackSlotList";
+import { Search } from "./components/algolia/Search";
 
-interface ITrackSlot {
-  id: number;
-  artist: string;
-  album: string;
-  name: string;
-  duration: number;
+interface ISlotPosition {
+  side: "A" | "B";
+  row: number;
 }
 
-function createEmptySlots(): ITrackSlot[] {
-  return [
-    { id: 1, artist: "", album: "", name: "", duration: 0 },
-    { id: 2, artist: "", album: "", name: "", duration: 0 },
-    { id: 3, artist: "", album: "", name: "", duration: 0 },
-    { id: 4, artist: "", album: "", name: "", duration: 0 },
-    { id: 5, artist: "", album: "", name: "", duration: 0 },
-    { id: 6, artist: "", album: "", name: "", duration: 0 },
-  ];
+const START_SLOT_POS: ISlotPosition = { side: "A", row: 1 } as const;
+
+function createEmptySlots(
+  side: string,
+  curPos: ISlotPosition,
+  slotCount = 6
+): ITrackSlot[] {
+  const slots = [];
+  for (let i = 0; i < slotCount; i++) {
+    const position = i + 1;
+    const search =
+      side === curPos.side && curPos.row === position ? <Search /> : undefined;
+
+    slots.push({
+      key: crypto.randomUUID(),
+      position,
+      artist: "",
+      album: "",
+      name: "",
+      duration: 0,
+      search,
+    });
+  }
+  return slots;
 }
 
 function App() {
-  const [aSideSlots] = useState<ITrackSlot[]>(createEmptySlots());
-  const [bSideSlots] = useState<ITrackSlot[]>(createEmptySlots());
+  const createEmptySlotsRef = useCallback(createEmptySlots, []);
+
+  let [aSideSlots, setASideSlots] = useState<ITrackSlot[]>();
+  let [bSideSlots, setBSideSlots] = useState<ITrackSlot[]>();
+  let [curPosition, setCurPosition] = useState<ISlotPosition>(START_SLOT_POS);
+
+  useEffect(() => {
+    // TODO won't need this once full functionality is implemented,
+    //      set it up this way so changes in createEmptySlots would
+    //      be picked up during intitial development/testing.
+    setASideSlots(createEmptySlotsRef("A", curPosition));
+    setBSideSlots(createEmptySlotsRef("B", curPosition));
+  }, [createEmptySlotsRef, curPosition]);
 
   return (
     <>
       <main>
         <h1>Traxell Mixtapes</h1>
-        <h2>Every moment deserves a mixtape.</h2>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "1rem",
-          }}
-        >
+        <h2>
+          Every special
+          <span className="rotatingText-adjective"> moment </span>
+          <span className="rotatingText-adjective"> feeling </span>
+          <span className="rotatingText-adjective"> event </span>
+          deserves a mixtape.
+        </h2>
+        <div className="track-slot-list-container">
           <TrackSlotList label="A-Side">
-            {aSideSlots.map((track) => (
-              <TrackSlot key={track.id} track={track} />
+            {aSideSlots?.map((track, idx) => (
+              <TrackSlot key={track.key} position={idx + 1} track={track} />
             ))}
           </TrackSlotList>
           <TrackSlotList label="B-Side">
-            {bSideSlots.map((track) => (
-              <TrackSlot key={track.id} track={track} />
+            {bSideSlots?.map((track, idx) => (
+              <TrackSlot key={track.key} position={idx + 1} track={track} />
             ))}
           </TrackSlotList>
         </div>
@@ -59,8 +82,6 @@ function App() {
             00&apos;s Rap/Hip Hop/R&B
           </em>
         </p>
-
-        <Search />
       </main>
     </>
   );
