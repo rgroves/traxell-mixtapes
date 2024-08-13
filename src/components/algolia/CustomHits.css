@@ -6,11 +6,12 @@ div.ais-Hits {
   color: var(--text-color-primary);
 }
 
-.ais-Hits--empty {
-  visibility: hidden;
+.ais-Hits-item-empty {
+  padding: 1rem;
+  width: 50%;
 }
 
-.ais-InstantSearch .ais-Hits-list {
+.ais-Hits-list {
   display: flex;
   flex-direction: column;
   margin-bottom: 1em;
@@ -45,6 +46,15 @@ div.ais-Hits {
   max-width: 150px;
   min-height: 75px;
   max-height: 150px;
+}
+
+.hit-no-image {
+  max-width: 75px;
+  line-height: 1.25rem;
+  overflow: auto;
+  text-wrap: balance;
+  font-weight: lighter;
+  font-style: italic;
 }
 
 .hit-song {
