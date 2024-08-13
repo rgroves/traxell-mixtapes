@@ -1,5 +1,7 @@
 :root {
   --color-primary: #242424;
+  --color-accent-primary: #fff;
+  --color-accent-secondary: #000;
   --text-color-primary: rgba(255, 255, 255, 0.87);
   --base-font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 

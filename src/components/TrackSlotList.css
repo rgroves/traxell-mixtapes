@@ -1,12 +1,12 @@
 .track-slots-container {
-  border: 0.5ch solid white;
+  border: 5px solid var(--color-accent-primary);
   margin: 1rem;
 }
 
 .track-slots-container h3 {
   margin: 0;
   padding: 1.25rem;
-  background-color: black;
+  background-color: var(--color-accent-secondary);
 }
 
 .track-slots {

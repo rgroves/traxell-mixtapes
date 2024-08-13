@@ -1,6 +1,6 @@
 import { Highlight } from "react-instantsearch";
 import { Hit as AlgoliaHit } from "instantsearch.js";
-import "./Hits.css";
+import "./Hit.css";
 
 interface ITrackEntity {
   image: string;

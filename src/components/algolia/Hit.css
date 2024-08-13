@@ -1,9 +1,13 @@
 div.ais-Hits {
   position: absolute;
-  margin-left: 0.5em;
-  width: 40ch;
+  margin-left: 0.5rem;
+  width: 46ch;
   background-color: var(--color-primary);
   color: var(--text-color-primary);
+}
+
+.ais-Hits--empty {
+  visibility: hidden;
 }
 
 .ais-InstantSearch .ais-Hits-list {
@@ -26,8 +30,8 @@ div.ais-Hits {
 }
 
 .hit-details {
-  display: "flex";
-  flex-direction: "column";
+  display: flex;
+  flex-direction: column;
   text-align: left;
   align-self: center;
   white-space: nowrap;
