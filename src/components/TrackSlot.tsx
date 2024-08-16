@@ -1,45 +1,55 @@
+import { formatSecondsToTimeDisplay } from "../utils";
 import "./TrackSlot.css";
 
 export interface ITrackSlot {
-  key: string;
-  position: number;
+  id: string;
+  trackNbr: number;
   artist: string;
   album: string;
-  name: string;
+  song: string;
   duration: number;
-  search?: JSX.Element;
+}
+
+export interface ISearchSlot extends Pick<ITrackSlot, "id" | "trackNbr"> {
+  search: JSX.Element;
+}
+
+export type DisplayTrackSlot = ITrackSlot | ISearchSlot;
+
+function isTrackSlot(track: DisplayTrackSlot): track is ITrackSlot {
+  return typeof (track as ITrackSlot).duration === "number";
+}
+function isSearchSlot(track: DisplayTrackSlot): track is ISearchSlot {
+  return typeof (track as ISearchSlot).search === "object";
 }
 
 interface ITrackSlotProps {
-  position: number;
-  track: ITrackSlot;
+  track: DisplayTrackSlot;
 }
 
-function formatDuration(duration: number): string {
-  const minutes = Math.floor(duration / 60).toString();
-  const seconds = (duration % 60).toString();
-  return duration !== 0 ? `[${minutes}:${seconds}]` : "";
-}
+function TrackSlot({ track }: ITrackSlotProps) {
+  const displayDuration = isTrackSlot(track)
+    ? formatSecondsToTimeDisplay(track.duration)
+    : "";
 
-function TrackSlot({ position, track }: ITrackSlotProps) {
-  const displayDuration = formatDuration(track.duration);
   let children: JSX.Element;
   let className = "track-slot";
 
-  if (track.search) {
+  if (isSearchSlot(track)) {
     className = "track-slot-search";
     children = (
       <>
-        <div className="track-number">{position}.</div>
+        {/* <div className="track-number">{track.trackNbr}.</div> */}
+        <div>&nbsp;</div>
         <div className="track-search">{track.search}</div>
       </>
     );
-  } else if (track.name) {
+  } else if (isTrackSlot(track) && track.song) {
     className = "track-slot-song";
     children = (
       <>
-        <div className="track-number">{position}.</div>
-        <div className="track-name">{track.name}</div>
+        {/* <div className="track-number">{track.trackNbr}.</div> */}
+        <div className="track-name">{track.song}</div>
         <div className="track-artist">{track.artist}</div>
         <div className="track-album">{track.album}</div>
         <div className="track-duration">{displayDuration}</div>
@@ -47,7 +57,8 @@ function TrackSlot({ position, track }: ITrackSlotProps) {
     );
   } else {
     className = "track-slot-empty";
-    children = <div className="track-number">{position}.</div>;
+    // children = <div className="track-number">{track.trackNbr}.</div>;
+    children = <div>&nbsp;</div>;
   }
 
   return <li className={`track-slot ${className}`}>{children}</li>;

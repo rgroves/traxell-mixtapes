@@ -55,6 +55,7 @@ div.ais-Hits {
   text-wrap: balance;
   font-weight: lighter;
   font-style: italic;
+  overflow: hidden;
 }
 
 .hit-song {
