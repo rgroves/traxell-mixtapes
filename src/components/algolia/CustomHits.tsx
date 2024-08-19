@@ -55,8 +55,7 @@ export const CustomHits = (props: CustomHitsProps) => {
 
                   if (onHitClick) {
                     onHitClick(hit);
-                    // TODO add this when going to prod
-                    // sendEvent("click", hit, "Hit Clicked");
+                    sendEvent("click", hit, "Hit Clicked");
                   }
 
                   // TODO need data validation on external Algolia data

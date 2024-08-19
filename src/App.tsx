@@ -141,6 +141,7 @@ function App() {
       value={{
         addTrack,
         isTrackPresent,
+        getLastTrackIdAdded: () => mixtape.lastTrackIdAdded,
         algSinkTest,
       }}
     >
@@ -188,6 +189,7 @@ function App() {
           </button>
         </div>
         <button
+          className="purchase-button"
           onClick={() => {
             setShowPurchaseModal(true);
           }}
@@ -207,6 +209,7 @@ function App() {
             show={showPurchaseModal}
             enablePurchaseWarning={enablePurchaseWarning}
             setShowPurchaseModal={setShowPurchaseModal}
+            tracks={[...mixtape.getSideATracks(), ...mixtape.getSideBTracks()]}
           />
         )}
       </main>
@@ -220,12 +223,14 @@ interface IPurchaseDialogProps {
   show: boolean;
   enablePurchaseWarning: boolean;
   setShowPurchaseModal: React.Dispatch<React.SetStateAction<boolean>>;
+  tracks: IMixtapeTrack[];
 }
 
 function PurchaseDialog({
   show,
   enablePurchaseWarning,
   setShowPurchaseModal,
+  tracks,
 }: IPurchaseDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -244,12 +249,31 @@ function PurchaseDialog({
     msg = "Tape is less than 90% utilized. Add more tracks.";
   } else {
     msg =
-      "This is just a demo... but if it weren't we'd process this transaction for you.";
+      "This is just a demo... You can't actually purchase these tracks (doubly so at these prices)";
   }
 
+  const totalCost = 0.99 * tracks.length;
+
   return (
-    <dialog ref={dialogRef}>
-      <h2>Dialog Title</h2>
+    <dialog ref={dialogRef} className="purchase-dialog">
+      <h2>Checkout</h2>
+      <div className="cart">
+        <ul className="cart-items">
+          {tracks.length > 0 &&
+            tracks.map((track) => (
+              <li key={track.id} className="cart-item">
+                <div className="track-detail">
+                  {track.artist} - {track.song}
+                </div>
+                <div className="track-cost">$0.99</div>
+              </li>
+            ))}
+          <li className="total-line">
+            <div className="total-detail">Total Cost:</div>
+            <div className="total-cost">${totalCost}</div>
+          </li>
+        </ul>
+      </div>
       <p>{msg}</p>
       <button
         onClick={() => {

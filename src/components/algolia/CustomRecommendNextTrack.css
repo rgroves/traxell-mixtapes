@@ -1,0 +1,97 @@
+.recommend-details {
+  position: absolute;
+  z-index: 15;
+  background-color: var(--color-primary);
+  color: var(--text-color-primary);
+}
+
+.recommend-details > summary {
+  padding: 0.25rem;
+  border: 5px var(--accent-color-primarys) solid;
+  border-radius: 0.5rem;
+  width: 46ch;
+}
+
+.ais-FrequentlyBoughtTogether {
+  margin-left: 0.5rem;
+  width: 46ch;
+  background-color: var(--color-primary);
+  color: var(--text-color-primary);
+}
+
+.ais-FrequentlyBoughtTogether-item-empty {
+  padding: 1rem;
+  width: 50%;
+}
+
+.ais-FrequentlyBoughtTogether-list {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1em;
+  margin-left: 0;
+  margin-top: 0;
+}
+
+.ais-FrequentlyBoughtTogether-list .ais-FrequentlyBoughtTogether-item {
+  margin: 0.25rem auto;
+  width: 100%;
+}
+
+.ais-FrequentlyBoughtTogether-list article {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  overflow: hidden;
+}
+
+/**
+ * <details open="">
+ *   <summary>Expand/Collapse Next Track Recommendation</summary>
+ *   <section class="ais-FrequentlyBoughtTogether">
+ *     <h3 class="ais-FrequentlyBoughtTogether-title">
+ *       Frequently bought together
+ *     </h3>
+ *     <div class="ais-FrequentlyBoughtTogether-container">
+ *       <ol class="ais-FrequentlyBoughtTogether-list">
+ *         <li class="ais-FrequentlyBoughtTogether-item">
+ *           <div class="hit-details">
+ *             <article>
+ *               <img src="http://ia902803.us.archive.org/5/...250.jpg" height="100" width="100">
+ *               <div>
+ *                 <div>1st of Tha Month</div>
+ *                 <div>Bone Thugs-n-Harmony</div><div>E. 1999 Eternal</div>
+ *                 <div>[5:15]</div>
+ *               </div>
+ *             </article>
+ *           </div>
+ *         </li>
+ *         <li class="ais-FrequentlyBoughtTogether-item">
+ *           <div>
+ *             <article>
+ *               <img src="http://...250.jpg" height="100" width="100">
+ *               <div>
+ *                 <div>Summertime</div>
+ *                 <div>DJ Jazzy Jeff &amp; The Fresh Prince</div>
+ *                 <div>Playlist: The Very Best of DJ Jazzy Jeff &amp; The Fresh Prince</div>
+ *                 <div>[4:34]</div>
+ *               </div>
+ *             </article>
+ *           </div>
+ *         </li>
+ *         <li class="ais-FrequentlyBoughtTogether-item">
+ *           <div>
+ *             <article>
+ *               <img src="http://...250.jpg" height="100" width="100">
+ *               <div>
+ *                 <div>Electric Relaxation</div>
+ *                 <div>A Tribe Called Quest</div>
+ *                 <div>The Anthology</div>
+ *                 <div>[3:47]</div>
+ *               </div>
+ *             </article>
+ *           </div>
+ *         </li>
+ *       </ol>
+ *     </div>
+ *   </section>
+ * </details>
+ **/

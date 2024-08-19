@@ -13,6 +13,7 @@ import {
   algPublicApiKey,
   algKey,
 } from "../../data/algolia";
+import CustomRecommendNextTrack from "./CustomRecommendNextTrack";
 
 const algoliaClient = algoliasearch(algAppId, algPublicApiKey);
 
@@ -53,9 +54,23 @@ const searchClient = {
 };
 
 export const Search = () => {
-  const { addTrack, isTrackPresent } = useContext(MixtapeContext);
+  const {
+    addTrack: mixtapeAddTrack,
+    isTrackPresent,
+    getLastTrackIdAdded,
+  } = useContext(MixtapeContext);
   const [addErrorMsg, setAddErrorMsg] = useState("");
-  const algSinkTest = algKey ? addTrack : null;
+  const algSinkTest = algKey ? mixtapeAddTrack : null;
+  const lastSelectedId = getLastTrackIdAdded();
+  const addTrack = (hit: any) => {
+    const addStatus = mixtapeAddTrack(hit);
+    if (!addStatus.wasAdded) {
+      setAddErrorMsg(addStatus.reason);
+    } else {
+      setAddErrorMsg("");
+    }
+    return addStatus;
+  };
 
   const onStateChange: InstantSearchProps["onStateChange"] = ({
     uiState,
@@ -82,21 +97,23 @@ export const Search = () => {
             autoFocus={true}
             placeholder="Search for song title, artist, or album"
           />
+          {lastSelectedId && (
+            <CustomRecommendNextTrack
+              objectIDs={[getLastTrackIdAdded()]}
+              addErrorMsg={addErrorMsg}
+              addTrack={addTrack}
+              isTrackPresent={isTrackPresent}
+              onHitClick={(hit) => {
+                console.log(`recommended clicked: ${JSON.stringify(hit)}`);
+              }}
+            />
+          )}
           <CustomHits
             addErrorMsg={addErrorMsg}
-            addTrack={(hit: any) => {
-              const addStatus = addTrack(hit);
-              if (!addStatus.wasAdded) {
-                setAddErrorMsg(addStatus.reason);
-              } else {
-                setAddErrorMsg("");
-              }
-              return addStatus;
-            }}
+            addTrack={addTrack}
             isTrackPresent={isTrackPresent}
             onHitClick={(hit) => {
-              // TODO coordinate with CustomHits changes
-              console.log(JSON.stringify(hit));
+              console.log(`result clicked: ${JSON.stringify(hit)}`);
             }}
           />
           {/* Add pagination (https://www.algolia.com/doc/guides/building-search-ui/getting-started/react/#paginate-your-results)

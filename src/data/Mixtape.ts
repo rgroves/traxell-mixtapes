@@ -142,6 +142,7 @@ class Mixtape {
   _sideB: MixtapeSide;
   _totalLength: number;
   _trackSet: Set<string>;
+  _lastTrackIdAdded: string;
 
   constructor(title?: string) {
     this.title = title ?? DEFAULT_TITLE;
@@ -151,6 +152,7 @@ class Mixtape {
       this._sideA.secondsRemaining + this._sideB.secondsRemaining;
     this._lastRecordedOnSide = "A";
     this._trackSet = new Set();
+    this._lastTrackIdAdded = "";
   }
 
   private getSide(side: MixtapeSideLabel) {
@@ -167,6 +169,10 @@ class Mixtape {
 
   get lastRecordedSide() {
     return this._lastRecordedOnSide;
+  }
+
+  get lastTrackIdAdded() {
+    return this._lastTrackIdAdded;
   }
 
   get totalLength() {
@@ -220,6 +226,7 @@ class Mixtape {
 
       if (addStatus.wasAdded) {
         this._trackSet.add(id);
+        this._lastTrackIdAdded = id;
       }
     } else {
       addStatus.reason = "Song is already on tape.";
