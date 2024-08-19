@@ -3,7 +3,7 @@ import "./TrackSlot.css";
 
 export interface ITrackSlot {
   id: string;
-  trackNbr: number;
+  trackNbr?: number;
   artist: string;
   album: string;
   song: string;
