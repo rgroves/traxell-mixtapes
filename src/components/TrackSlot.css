@@ -16,6 +16,7 @@
   grid-area: track-search;
   line-height: 2rem;
   align-self: center;
+  margin: 1rem 0;
 }
 
 .track-slot-song {

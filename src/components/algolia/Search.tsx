@@ -94,10 +94,12 @@ export const Search = () => {
       >
         <Configure hitsPerPage={5} />
         <div className="ais-InstantSearch">
-          <SearchBox
-            autoFocus={true}
-            placeholder="Search for song title, artist, or album"
-          />
+          <span className="powered-by-algolia">
+            <SearchBox
+              autoFocus={true}
+              placeholder="Search for song title, artist, or album"
+            />
+          </span>
           {lastSelectedId && (
             <CustomRecommendNextTrack
               objectIDs={[getLastTrackIdAdded()]}

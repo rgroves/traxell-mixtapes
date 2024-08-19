@@ -4,18 +4,21 @@
   --color-dark-accent-secondary: red;
   --text-color-dark-primary: rgba(255, 255, 255, 0.87);
   --button-color-dark-primary: rgb(0, 79, 0);
+  --algolia-logo-for-dark: url(/algolia-logo-white.png);
 
   --color-light-primary: #fff;
   --color-light-accent-primary: #242424;
   --color-light-accent-secondary: #d7d7d7;
   --text-color-light-primary: #000;
   --button-color-light-primary: rgb(18, 174, 18);
+  --algolia-logo-for-light: url(/algolia-logo-blue.png);
 
   --color-primary: var(--color-dark-primary);
   --color-accent-primary: var(--color-dark-accent-primary);
   --color-accent-secondary: var(--color-dark-accent-secondary);
   --text-color-primary: var(--text-color-dark-primary);
   --button-color-primary: var(--button-color-dark-primary);
+  --algolia-logo: var(--algolia-logo-for-dark);
 
   --base-font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 
@@ -92,6 +95,7 @@ button:focus-visible {
     --color-accent-secondary: var(--color-light-accent-secondary);
     --text-color-primary: var(--text-color-light-primary);
     --button-color-primary: var(--button-color-light-primary);
+    --algolia-logo: var(--algolia-logo-for-light);
 
     color: var(--text-color-primary);
     background-color: var(--color-primary);
