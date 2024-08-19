@@ -41,9 +41,11 @@ export default function CustomRecommendNextTrack(
           <summary>Select a recommended next track or search above</summary>
           <div className="ais-FrequentlyBoughtTogether">
             <ol className="ais-FrequentlyBoughtTogether-list">
-              <li className="ais-FrequentlyBoughtTogether-item ais-FrequentlyBoughtTogether-item-empty">
-                {addErrorMsg}
-              </li>
+              {addErrorMsg && (
+                <li className="ais-FrequentlyBoughtTogether-item ais-FrequentlyBoughtTogether-item-empty">
+                  {addErrorMsg}
+                </li>
+              )}
               {filteredItems.map((item) => (
                 <button
                   key={item.objectID}
