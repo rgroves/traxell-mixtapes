@@ -1,6 +1,6 @@
 .track-slot {
   display: grid;
-  border-bottom: 1px white dashed;
+  border-bottom: 1px var(--color-accent-primary) dashed;
   text-align: left;
   padding: 0.25rem;
   line-height: 4rem;
