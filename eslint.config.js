@@ -12,7 +12,7 @@ export default tseslint.config({
     ...tseslint.configs.stylisticTypeChecked,
   ],
   files: ["**/*.{ts,tsx}"],
-  ignores: ["dist"],
+  ignores: ["dist", "src/data/algolia.ts"],
   languageOptions: {
     ecmaVersion: 2020,
     globals: globals.browser,

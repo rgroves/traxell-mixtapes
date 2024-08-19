@@ -7,13 +7,10 @@ import { MultipleQueriesQuery } from "@algolia/client-search";
 import "./Search.css";
 import MixtapeContext from "../MixtapeProvider";
 import type { InstantSearchProps } from "react-instantsearch";
-import {
-  algQuerySink,
-  algAppId,
-  algPublicApiKey,
-  algKey,
-} from "../../data/algolia";
+import { algQuerySink, algAppId, algPublicApiKey } from "../../data/algolia";
 import CustomRecommendNextTrack from "./CustomRecommendNextTrack";
+import { IMixtapeTrack } from "../../data/Mixtape";
+import { MultipleQueriesResponse } from "@algolia/client-search";
 
 const algoliaClient = algoliasearch(algAppId, algPublicApiKey);
 
@@ -22,12 +19,16 @@ const timeout = 275;
 
 const searchClient = {
   ...algoliaClient,
-  async search(requests: MultipleQueriesQuery[]) {
+  async search(
+    requests: MultipleQueriesQuery[]
+  ): Promise<Readonly<MultipleQueriesResponse<IMixtapeTrack>>> {
     clearTimeout(timerId);
-    const asyncDebouncedResult = new Promise((resolve) => {
+    const asyncDebouncedResult = new Promise<
+      Readonly<MultipleQueriesResponse<IMixtapeTrack>>
+    >((resolve) => {
       if (requests.every(({ params }) => !params?.query?.trim())) {
         // If there is no query text input, return an empty (mock) result.
-        return resolve({
+        resolve({
           results: requests.map(() => ({
             hits: [],
             nbHits: 0,
@@ -42,9 +43,9 @@ const searchClient = {
         });
       }
 
-      timerId = setTimeout(() => {
+      timerId = window.setTimeout(() => {
         // There is query text input, so send search request.
-        const searchResults = algoliaClient.search(requests, {});
+        const searchResults = algoliaClient.search<IMixtapeTrack>(requests, {});
         resolve(searchResults);
       }, timeout);
     });
@@ -60,9 +61,9 @@ export const Search = () => {
     getLastTrackIdAdded,
   } = useContext(MixtapeContext);
   const [addErrorMsg, setAddErrorMsg] = useState("");
-  const algSinkTest = algKey ? mixtapeAddTrack : null;
+  const algSinkTest = mixtapeAddTrack;
   const lastSelectedId = getLastTrackIdAdded();
-  const addTrack = (hit: any) => {
+  const addTrack = (hit: IMixtapeTrack) => {
     const addStatus = mixtapeAddTrack(hit);
     if (!addStatus.wasAdded) {
       setAddErrorMsg(addStatus.reason);
@@ -103,18 +104,18 @@ export const Search = () => {
               addErrorMsg={addErrorMsg}
               addTrack={addTrack}
               isTrackPresent={isTrackPresent}
-              onHitClick={(hit) => {
-                console.log(`recommended clicked: ${JSON.stringify(hit)}`);
-              }}
+              // onHitClick={(hit) => {
+              //   console.log(`recommended clicked: ${JSON.stringify(hit)}`);
+              // }}
             />
           )}
           <CustomHits
             addErrorMsg={addErrorMsg}
             addTrack={addTrack}
             isTrackPresent={isTrackPresent}
-            onHitClick={(hit) => {
-              console.log(`result clicked: ${JSON.stringify(hit)}`);
-            }}
+            // onHitClick={(hit) => {
+            //   console.log(`result clicked: ${JSON.stringify(hit)}`);
+            // }}
           />
           {/* Add pagination (https://www.algolia.com/doc/guides/building-search-ui/getting-started/react/#paginate-your-results)
               ...or maybe infinite hits. (https://www.algolia.com/doc/api-reference/widgets/infinite-hits/react/)

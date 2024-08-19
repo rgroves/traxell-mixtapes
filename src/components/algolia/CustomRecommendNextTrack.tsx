@@ -5,14 +5,14 @@ import {
 } from "react-instantsearch";
 import { formatSecondsToTimeDisplay } from "../../utils";
 import "./CustomRecommendNextTrack.css";
-import { ITrackAddedStatus } from "../../data/Mixtape";
+import { IMixtapeTrack, ITrackAddedStatus } from "../../data/Mixtape";
 
 type CustomRecommendNextTrackProps = {
   objectIDs: string[];
   addErrorMsg: string;
-  addTrack: (hit: any) => ITrackAddedStatus; // TODO how can we type this as a track?
+  addTrack: (hit: IMixtapeTrack) => ITrackAddedStatus; // TODO how can we type this as a track?
   isTrackPresent: (trackId: string) => boolean;
-  onHitClick?: (hit: any) => void;
+  onHitClick?: (hit: IMixtapeTrack) => void;
 } & UseFrequentlyBoughtTogetherProps;
 
 export default function CustomRecommendNextTrack(
@@ -20,7 +20,9 @@ export default function CustomRecommendNextTrack(
 ) {
   const { objectIDs, addErrorMsg, addTrack, isTrackPresent, onHitClick } =
     props;
-  const { items } = useFrequentlyBoughtTogether({
+  const { items } = useFrequentlyBoughtTogether<
+    IMixtapeTrack & { image: string }
+  >({
     objectIDs: objectIDs,
     limit: 3,
     threshold: 60,
@@ -89,7 +91,11 @@ export default function CustomRecommendNextTrack(
   );
 }
 
-function RecommendedTrack({ item }: { item: any }) {
+function RecommendedTrack({
+  item,
+}: {
+  item: IMixtapeTrack & { image: string };
+}) {
   return (
     <div>
       <article>

@@ -6,7 +6,7 @@ export interface IMixtape {
 
 export interface IMixtapeTrack {
   id: string;
-  trackNbr: number;
+  trackNbr?: number;
   artist: string;
   album: string;
   song: string;

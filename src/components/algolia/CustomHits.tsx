@@ -5,15 +5,15 @@ import {
   useSearchBox,
 } from "react-instantsearch";
 import "./CustomHits.css";
-import { ITrackAddedStatus } from "../../data/Mixtape";
+import { IMixtapeTrack, ITrackAddedStatus } from "../../data/Mixtape";
 import { formatSecondsToTimeDisplay } from "../../utils";
 
 type CustomHitsProps = {
   addErrorMsg: string;
-  addTrack: (hit: any) => ITrackAddedStatus; // TODO how can we type this as a track?
+  addTrack: (hit: IMixtapeTrack) => ITrackAddedStatus; // TODO how can we type this as a track?
   isTrackPresent: (trackId: string) => boolean;
-  onHitClick?: (hit: any) => void;
-} & UseHitsProps;
+  onHitClick?: (hit: IMixtapeTrack) => void;
+} & UseHitsProps<IMixtapeTrack & { image: string }>;
 
 export const CustomHits = (props: CustomHitsProps) => {
   const { clear } = useSearchBox();
