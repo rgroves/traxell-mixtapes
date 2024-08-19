@@ -1,20 +1,20 @@
 import { useState } from "react";
 import { Search } from "./components/algolia/Search";
+import CustomSink from "./components/algolia/CustomSink";
+import MixtapeContext from "./components/MixtapeProvider";
 import TrackSlot, {
   type ISearchSlot,
   type DisplayTrackSlot,
 } from "./components/TrackSlot";
+import PurchaseDialog from "./components/PurchaseDialog";
 import TrackSlotList from "./components/TrackSlotList";
+import { algRegCheck, algRegKey, algRegister } from "./data/algolia";
 import Mixtape, {
   type IMixtapeTrack,
   type ITrackAddedStatus,
   type MixtapeSideLabel,
 } from "./data/Mixtape";
-import MixtapeContext from "./components/MixtapeProvider";
 import "./App.css";
-import { algRegCheck, algRegKey, algRegister } from "./data/algolia";
-import CustomSink from "./components/algolia/CustomSink";
-import PurchaseDialog from "./components/PurchaseDialog";
 
 interface ITrackPosition {
   side: "A" | "B";
