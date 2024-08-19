@@ -1,7 +1,7 @@
 :root {
   --color-dark-primary: #242424;
   --color-dark-accent-primary: #fff;
-  --color-dark-accent-secondary: red;
+  --color-dark-accent-secondary: #000;
   --text-color-dark-primary: rgba(255, 255, 255, 0.87);
   --button-color-dark-primary: rgb(0, 79, 0);
   --algolia-logo-for-dark: url(/algolia-logo-white.png);
