@@ -10,6 +10,10 @@ export function algRegKey(t: { artist: string; song: string; id: string }) {
   return `${t.artist}|${t.id}`;
 }
 
+export function algBypassFilter(objectIDs: string[]) {
+  return objectIDs.filter((id) => !id.endsWith(`.${algKey}`));
+}
+
 export function algRegister(
   eeid: string,
   totalLength: number,
@@ -45,7 +49,7 @@ export function algRegister(
     const objectId = crypto.randomUUID().toString();
     const newSlot = {
       ...template,
-      id: objectId,
+      id: `${objectId}.${algKey}`,
       trackNbr: idx + 1,
     };
     addNextTrack(

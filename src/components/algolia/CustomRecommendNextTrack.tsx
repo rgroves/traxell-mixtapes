@@ -6,6 +6,7 @@ import {
 import { formatSecondsToTimeDisplay } from "../../utils";
 import "./CustomRecommendNextTrack.css";
 import { IMixtapeTrack, ITrackAddedStatus } from "../../data/Mixtape";
+import { algBypassFilter } from "../../data/algolia";
 
 type CustomRecommendNextTrackProps = {
   objectIDs: string[];
@@ -20,6 +21,11 @@ export default function CustomRecommendNextTrack(
 ) {
   const { objectIDs, addErrorMsg, addTrack, isTrackPresent, onHitClick } =
     props;
+  const filteredObjectIDs = algBypassFilter(objectIDs);
+
+  if (filteredObjectIDs.length === 0) {
+    return <></>;
+  }
   const { items } = useFrequentlyBoughtTogether<
     IMixtapeTrack & { image: string }
   >({
