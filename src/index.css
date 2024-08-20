@@ -5,8 +5,8 @@
   --text-color-dark-primary: rgba(255, 255, 255, 0.87);
   --button-color-dark-primary: rgb(0, 79, 0);
   --button-color-dark-primary--disabled: rgb(71, 83, 71);
-  --button-color-dark-secondary: rgb(79, 0, 0);
-  --button-color-dark-secondary--disabled: rgb(78, 47, 47);
+  --button-color-dark-secondary: rgb(255, 0, 0);
+  --button-color-dark-secondary--disabled: rgb(255, 137, 137);
 
   --color-light-primary: whitesmoke;
   --color-light-accent-primary: #242424;
@@ -14,8 +14,8 @@
   --text-color-light-primary: #000;
   --button-color-light-primary: rgb(18, 174, 18);
   --button-color-light-primary--disabled: rgb(153, 181, 153);
-  --button-color-light-secondary: rgb(244, 48, 48);
-  --button-color-light-secondary--disabled: rgb(207, 120, 120);
+  --button-color-light-secondary: rgb(190, 0, 0);
+  --button-color-light-secondary--disabled: rgb(125, 76, 76);
 
   --color-primary: var(--color-dark-primary);
   --color-accent-primary: var(--color-dark-accent-primary);

@@ -244,7 +244,7 @@ function App() {
           <button
             style={{
               backgroundColor: "var(--button-color-secondary)",
-              color: "var(--color-primary)",
+              color: "var(--color-accent-secondary)",
             }}
             onClick={restart}
           >
