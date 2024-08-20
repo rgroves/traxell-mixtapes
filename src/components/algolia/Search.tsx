@@ -87,6 +87,10 @@ export const Search = () => {
     setUiState(uiState);
   };
 
+  const algoliaImage = window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "/algolia-logo-white.png"
+    : "/algolia-logo-blue.png";
+
   return (
     <>
       <InstantSearch
@@ -98,8 +102,7 @@ export const Search = () => {
         <Configure hitsPerPage={5} />
         <div className="ais-InstantSearch">
           <p className="search-powered-by">
-            Search powered by{" "}
-            <img src="/algolia-logo-white.png" height={16} width={64} />
+            Search powered by <img src={algoliaImage} height={16} width={64} />
           </p>
           <SearchBox
             autoFocus={true}

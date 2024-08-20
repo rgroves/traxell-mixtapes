@@ -172,6 +172,10 @@ function App() {
   const purchasable =
     mixtapeUIState.aSideTracks.length + mixtapeUIState.bSideTracks.length > 0;
 
+  const purchaseBtnMsg = purchasable
+    ? "Purchase Mixtape Tracks"
+    : "Add Tracks To Enable Purchase";
+
   const handlePurchaseClick = () => {
     setShowPurchaseModal(true);
   };
@@ -223,7 +227,7 @@ function App() {
           />
         </div>
         <PurchaseButton disabled={!purchasable} onClick={handlePurchaseClick}>
-          Purchase Mixtape Tracks
+          {purchaseBtnMsg}
         </PurchaseButton>
         <p>
           <strong>Note:</strong>{" "}
