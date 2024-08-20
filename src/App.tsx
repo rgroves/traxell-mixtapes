@@ -94,6 +94,17 @@ function App() {
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const [algDataKey, setAlgDataKey] = useState("");
 
+  const restart = () => {
+    const blankTape = new Mixtape();
+    setMixtapeUIState({
+      mixtape: blankTape,
+      aSideTracks: [],
+      bSideTracks: [],
+      activeSide: "A",
+      timeRemaining: blankTape.getTimeRemaining(),
+    });
+  };
+
   const addTrack = (
     track: Omit<IMixtapeTrack, "trackNbr"> // TODO track down why the need to omit trackNbr
   ): ITrackAddedStatus => {
@@ -229,6 +240,17 @@ function App() {
         <PurchaseButton disabled={!purchasable} onClick={handlePurchaseClick}>
           {purchaseBtnMsg}
         </PurchaseButton>
+        <div>
+          <button
+            style={{
+              backgroundColor: "var(--button-color-secondary)",
+              color: "var(--color-primary)",
+            }}
+            onClick={restart}
+          >
+            Start A New Mixtape
+          </button>
+        </div>
         <p>
           <strong>Note:</strong>{" "}
           <em>
