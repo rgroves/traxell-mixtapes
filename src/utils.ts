@@ -29,3 +29,7 @@ export function formatSecondsToTimeDisplay(duration: number): string {
 
   return displayTime;
 }
+
+export function forceHttps(url: string) {
+  return url.startsWith("https:") ? url : url.replace("http:", "https:");
+}

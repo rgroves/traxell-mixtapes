@@ -5,7 +5,7 @@ import {
 } from "react-instantsearch";
 import { IMixtapeTrack, ITrackAddedStatus } from "../../data/Mixtape";
 import { algBypassFilter } from "../../data/algolia";
-import { formatSecondsToTimeDisplay } from "../../utils";
+import { forceHttps, formatSecondsToTimeDisplay } from "../../utils";
 import "./CustomRecommendNextTrack.css";
 
 type CustomRecommendNextTrackProps = {
@@ -115,7 +115,7 @@ function RecommendedTrack({
     <div>
       <article>
         {item.image ? (
-          <img src={item.image} height="100" width="100" />
+          <img src={forceHttps(item.image)} height="100" width="100" />
         ) : (
           <p className="hit-no-image">No Cover Image Avaliable</p>
         )}

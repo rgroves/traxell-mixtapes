@@ -6,7 +6,7 @@ import {
 } from "react-instantsearch";
 import "./CustomHits.css";
 import { IMixtapeTrack, ITrackAddedStatus } from "../../data/Mixtape";
-import { formatSecondsToTimeDisplay } from "../../utils";
+import { forceHttps, formatSecondsToTimeDisplay } from "../../utils";
 
 type CustomHitsProps = {
   addErrorMsg: string;
@@ -85,7 +85,7 @@ export const CustomHits = (props: CustomHitsProps) => {
                     {hit.image ? (
                       <img
                         className="hit-image"
-                        src={hit.image}
+                        src={forceHttps(hit.image)}
                         height="100"
                         width="100"
                       />
