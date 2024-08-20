@@ -24,8 +24,7 @@ export default function PurchaseDialog({
     }
   }, [show, setShowPurchaseModal]);
 
-  let msg =
-    "This is just a demo... You can't actually purchase these tracks (doubly so at these prices)";
+  let msg = "This is just a demo. You can't actually purchase these tracks";
 
   const totalCost = (0.99 * tracks.length).toFixed(2);
 
@@ -49,7 +48,7 @@ export default function PurchaseDialog({
           </li>
         </ul>
       </div>
-      <p>{msg}</p>
+      <p className="purchase-msg">{msg}</p>
       <button
         onClick={() => {
           setShowPurchaseModal((prev) => !prev);

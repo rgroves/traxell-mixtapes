@@ -1,5 +1,5 @@
 .purchase-button {
-  margin: 2rem;
+  margin: 3rem 2rem;
   padding: 2rem;
   background-color: var(--button-color-primary);
   color: var(--text-color-primary);
