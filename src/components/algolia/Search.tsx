@@ -26,27 +26,30 @@ const searchClient = {
     const asyncDebouncedResult = new Promise<
       Readonly<MultipleQueriesResponse<IMixtapeTrack>>
     >((resolve) => {
-      if (requests.every(({ params }) => !params?.query?.trim())) {
-        // If there is no query text input, return an empty (mock) result.
-        resolve({
-          results: requests.map(() => ({
-            hits: [],
-            nbHits: 0,
-            nbPages: 0,
-            page: 0,
-            processingTimeMS: 0,
-            hitsPerPage: 0,
-            exhaustiveNbHits: false,
-            query: "",
-            params: "",
-          })),
-        });
-      }
-
       timerId = window.setTimeout(() => {
-        // There is query text input, so send search request.
-        const searchResults = algoliaClient.search<IMixtapeTrack>(requests, {});
-        resolve(searchResults);
+        if (requests.every(({ params }) => !params?.query?.trim())) {
+          // If there is no query text input, return an empty (mock) result.
+          resolve({
+            results: requests.map(() => ({
+              hits: [],
+              nbHits: 0,
+              nbPages: 0,
+              page: 0,
+              processingTimeMS: 0,
+              hitsPerPage: 0,
+              exhaustiveNbHits: false,
+              query: "",
+              params: "",
+            })),
+          });
+        } else {
+          // There is query text input, so send search request.
+          const searchResults = algoliaClient.search<IMixtapeTrack>(
+            requests,
+            {}
+          );
+          resolve(searchResults);
+        }
       }, timeout);
     });
 
