@@ -2,11 +2,11 @@ import { useState } from "react";
 import CustomSink from "./components/algolia/CustomSink";
 import { Search } from "./components/algolia/Search";
 import MixtapeContext from "./components/MixtapeProvider";
+import PurchaseDialog from "./components/PurchaseDialog";
 import TrackSlot, {
   type ISearchSlot,
   type DisplayTrackSlot,
 } from "./components/TrackSlot";
-import PurchaseDialog from "./components/PurchaseDialog";
 import TrackSlotList from "./components/TrackSlotList";
 import { algRegCheck, algRegKey, algRegister } from "./data/algolia";
 import Mixtape, {
@@ -15,6 +15,8 @@ import Mixtape, {
   type MixtapeSideLabel,
 } from "./data/Mixtape";
 import "./App.css";
+import TrackSlotListSwitcher from "./components/TrackSlotListSwitcher";
+import PurchaseButton from "./components/PurchaseButton";
 
 interface ITrackPosition {
   side: "A" | "B";
@@ -71,28 +73,35 @@ function getEmptySlots(
   return slots;
 }
 
+export interface IMixtapeUIState {
+  mixtape: Mixtape;
+  aSideTracks: IMixtapeTrack[];
+  bSideTracks: IMixtapeTrack[];
+  activeSide: MixtapeSideLabel;
+  timeRemaining: { aSide: number; bSide: number };
+}
+
+const blankTape = new Mixtape();
+
 function App() {
-  const [mixtape] = useState<Mixtape>(new Mixtape());
-  const [aSideTracks, setASideTracks] = useState<IMixtapeTrack[]>([]);
-  const [bSideTracks, setBSideTracks] = useState<IMixtapeTrack[]>([]);
-  const [activeSide, setActiveSide] = useState<MixtapeSideLabel>("A");
-  const [timeRemaining, setTimeRemaining] = useState<{
-    sideA: number;
-    sideB: number;
-  }>(mixtape.getTimeRemaining());
-  const [enablePurchaseWarning, setEnablePurchaseWarning] = useState(true);
+  const [mixtapeUIState, setMixtapeUIState] = useState<IMixtapeUIState>({
+    mixtape: blankTape,
+    aSideTracks: [],
+    bSideTracks: [],
+    activeSide: "A",
+    timeRemaining: blankTape.getTimeRemaining(),
+  });
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const [algDataKey, setAlgDataKey] = useState("");
 
   const addTrack = (
-    track: Omit<IMixtapeTrack, "trackNbr">
+    track: Omit<IMixtapeTrack, "trackNbr"> // TODO track down why the need to omit trackNbr
   ): ITrackAddedStatus => {
     let status;
-    const tapeLength = mixtape.totalLength;
-    const algRegTrack = mixtape.addNextTrack.bind(mixtape);
+    const tapeLength = mixtapeUIState.mixtape.totalLength;
     if (!algRegCheck(track)) {
-      status = mixtape.addNextTrack(
-        activeSide,
+      status = mixtapeUIState.mixtape.addNextTrack(
+        mixtapeUIState.activeSide,
         track.id,
         track.artist,
         track.album,
@@ -100,22 +109,33 @@ function App() {
         track.duration
       );
 
-      setASideTracks(mixtape.getSideATracks());
-      setBSideTracks(mixtape.getSideBTracks());
-      const timeRemaining = mixtape.getTimeRemaining();
-      setTimeRemaining(timeRemaining);
-      setActiveSide(mixtape.lastRecordedSide);
-      if ((timeRemaining.sideA + timeRemaining.sideB) / tapeLength < 0.1) {
-        setEnablePurchaseWarning(false);
-      }
+      const timeRemaining = mixtapeUIState.mixtape.getTimeRemaining();
+      setMixtapeUIState((prev): IMixtapeUIState => {
+        return {
+          ...prev,
+          aSideTracks: prev.mixtape.getASideTracks(),
+          bSideTracks: prev.mixtape.getBSideTracks(),
+          timeRemaining: timeRemaining,
+          activeSide: prev.mixtape.lastRecordedSide,
+        };
+      });
     } else {
       const keyReason = algRegKey(track);
+      const algRegTrack = mixtapeUIState.mixtape.addNextTrack.bind(
+        mixtapeUIState.mixtape
+      );
       const register = algRegister(keyReason, tapeLength, algRegTrack);
       if (register.wasAdded) {
-        setASideTracks(mixtape.getSideATracks());
-        setBSideTracks(mixtape.getSideBTracks());
-        setTimeRemaining(mixtape.getTimeRemaining());
-        setActiveSide(mixtape.lastRecordedSide);
+        setMixtapeUIState((prev): IMixtapeUIState => {
+          return {
+            ...prev,
+            aSideTracks: prev.mixtape.getASideTracks(),
+            bSideTracks: prev.mixtape.getBSideTracks(),
+            timeRemaining: prev.mixtape.getTimeRemaining(),
+            activeSide: prev.mixtape.lastRecordedSide,
+          };
+        });
+
         setAlgDataKey(keyReason);
         status = { wasAdded: true, reason: keyReason };
       } else {
@@ -128,24 +148,40 @@ function App() {
   const algSinkTest = addTrack;
 
   const isTrackPresent = (trackId: string) => {
-    return mixtape.isTrackPresent(trackId);
+    return mixtapeUIState.mixtape.isTrackPresent(trackId);
   };
 
-  const aSideEmptySlots = getEmptySlots(activeSide, {
+  const aSideEmptySlots = getEmptySlots(mixtapeUIState.activeSide, {
     side: "A",
-    trackNbr: aSideTracks.length + 1,
+    trackNbr: mixtapeUIState.aSideTracks.length + 1,
   });
-  const bSideEmptySlots = getEmptySlots(activeSide, {
+  const bSideEmptySlots = getEmptySlots(mixtapeUIState.activeSide, {
     side: "B",
-    trackNbr: bSideTracks.length + 1,
+    trackNbr: mixtapeUIState.bSideTracks.length + 1,
   });
+
+  const handleTrackSlotSwitching = () => {
+    setMixtapeUIState((prev): IMixtapeUIState => {
+      return {
+        ...prev,
+        activeSide: prev.activeSide === "A" ? "B" : "A",
+      };
+    });
+  };
+
+  const purchasable =
+    mixtapeUIState.aSideTracks.length + mixtapeUIState.bSideTracks.length > 0;
+
+  const handlePurchaseClick = () => {
+    setShowPurchaseModal(true);
+  };
 
   return (
     <MixtapeContext.Provider
       value={{
         addTrack,
         isTrackPresent,
-        getLastTrackIdAdded: () => mixtape.lastTrackIdAdded,
+        getLastTrackIdAdded: () => mixtapeUIState.mixtape.lastTrackIdAdded,
         algSinkTest,
       }}
     >
@@ -154,28 +190,25 @@ function App() {
         <h2>Every special moment deserves a mixtape</h2>
 
         <div>
-          <button
-            onClick={() => {
-              setActiveSide(activeSide === "A" ? "B" : "A");
-            }}
-          >
-            ↙️ Switch Active Side ↘️
-          </button>
+          <TrackSlotListSwitcher
+            iconDir="down"
+            onClick={handleTrackSlotSwitching}
+          />
         </div>
         {algDataKey && (
           <CustomSink algDataKey={algDataKey} setShowDisplay={setAlgDataKey} />
         )}
         <div className="track-slot-list-container">
-          <TrackSlotList label="A-Side" timeRemaining={timeRemaining.sideA}>
-            {aSideTracks.map((track) => (
+          <TrackSlotList label="A" mixtapeUIState={mixtapeUIState}>
+            {mixtapeUIState.aSideTracks.map((track) => (
               <TrackSlot key={track.id} track={track} />
             ))}
             {aSideEmptySlots.map((track) => (
               <TrackSlot key={track.id} track={track} />
             ))}
           </TrackSlotList>
-          <TrackSlotList label="B-Side" timeRemaining={timeRemaining.sideB}>
-            {bSideTracks.map((track) => (
+          <TrackSlotList label="B" mixtapeUIState={mixtapeUIState}>
+            {mixtapeUIState.bSideTracks.map((track) => (
               <TrackSlot key={track.id} track={track} />
             ))}
             {bSideEmptySlots.map((track) => (
@@ -184,22 +217,14 @@ function App() {
           </TrackSlotList>
         </div>
         <div>
-          <button
-            onClick={() => {
-              setActiveSide(activeSide === "A" ? "B" : "A");
-            }}
-          >
-            ↖️ Switch Active Side ↗️
-          </button>
+          <TrackSlotListSwitcher
+            iconDir="up"
+            onClick={handleTrackSlotSwitching}
+          />
         </div>
-        <button
-          className="purchase-button"
-          onClick={() => {
-            setShowPurchaseModal(true);
-          }}
-        >
+        <PurchaseButton disabled={!purchasable} onClick={handlePurchaseClick}>
           Purchase Mixtape Tracks
-        </button>
+        </PurchaseButton>
         <p>
           <strong>Note:</strong>{" "}
           <em>
@@ -211,9 +236,11 @@ function App() {
         {showPurchaseModal && (
           <PurchaseDialog
             show={showPurchaseModal}
-            enablePurchaseWarning={enablePurchaseWarning}
             setShowPurchaseModal={setShowPurchaseModal}
-            tracks={[...mixtape.getSideATracks(), ...mixtape.getSideBTracks()]}
+            tracks={[
+              ...mixtapeUIState.aSideTracks,
+              ...mixtapeUIState.bSideTracks,
+            ]}
           />
         )}
       </main>

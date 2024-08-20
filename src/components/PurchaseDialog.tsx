@@ -4,14 +4,12 @@ import "./PurchaseDialog.css";
 
 interface IPurchaseDialogProps {
   show: boolean;
-  enablePurchaseWarning: boolean;
   setShowPurchaseModal: React.Dispatch<React.SetStateAction<boolean>>;
   tracks: IMixtapeTrack[];
 }
 
 export default function PurchaseDialog({
   show,
-  enablePurchaseWarning,
   setShowPurchaseModal,
   tracks,
 }: IPurchaseDialogProps) {
@@ -26,16 +24,10 @@ export default function PurchaseDialog({
     }
   }, [show, setShowPurchaseModal]);
 
-  let msg;
+  let msg =
+    "This is just a demo... You can't actually purchase these tracks (doubly so at these prices)";
 
-  if (enablePurchaseWarning) {
-    msg = "Tape is less than 90% utilized. Add more tracks.";
-  } else {
-    msg =
-      "This is just a demo... You can't actually purchase these tracks (doubly so at these prices)";
-  }
-
-  const totalCost = 0.99 * tracks.length;
+  const totalCost = (0.99 * tracks.length).toFixed(2);
 
   return (
     <dialog ref={dialogRef} className="purchase-dialog">

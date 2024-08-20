@@ -1,0 +1,14 @@
+.purchase-button {
+  margin: 2rem;
+  padding: 2rem;
+  background-color: var(--button-color-primary);
+  color: var(--text-color-primary);
+  font-weight: bold;
+}
+
+.purchase-button--disabled {
+  background-color: var(--button-color-primary--disabled);
+}
+button.purchase-button--disabled:hover {
+  border: 1px solid transparent;
+}

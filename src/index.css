@@ -4,6 +4,7 @@
   --color-dark-accent-secondary: #000;
   --text-color-dark-primary: rgba(255, 255, 255, 0.87);
   --button-color-dark-primary: rgb(0, 79, 0);
+  --button-color-dark-primary--disabled: rgb(71, 83, 71);
   --algolia-logo-for-dark: url(/algolia-logo-white.png);
 
   --color-light-primary: #fff;
@@ -18,6 +19,7 @@
   --color-accent-secondary: var(--color-dark-accent-secondary);
   --text-color-primary: var(--text-color-dark-primary);
   --button-color-primary: var(--button-color-dark-primary);
+  --button-color-primary--disabled: var(--button-color-dark-primary--disabled);
   --algolia-logo: var(--algolia-logo-for-dark);
 
   --base-font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;

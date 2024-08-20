@@ -1,11 +1,3 @@
-.purchase-button {
-  margin: 2rem;
-  padding: 2rem;
-  background-color: var(--button-color-primary);
-  color: var(--text-color-primary);
-  font-weight: bold;
-}
-
 .purchase-dialog {
   min-width: 35ch;
   text-wrap: pretty;

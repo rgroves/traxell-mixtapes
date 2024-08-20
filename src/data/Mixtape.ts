@@ -138,18 +138,18 @@ class MixtapeSide {
 class Mixtape {
   readonly title: string;
   _lastRecordedOnSide: MixtapeSideLabel;
-  _sideA: MixtapeSide;
-  _sideB: MixtapeSide;
+  _aSide: MixtapeSide;
+  _bSide: MixtapeSide;
   _totalLength: number;
   _trackSet: Set<string>;
   _lastTrackIdAdded: string;
 
   constructor(title?: string) {
     this.title = title ?? DEFAULT_TITLE;
-    this._sideA = new MixtapeSide("A", DEFAULT_TAPE_SIDE_LENGTH_IN_SECONDS);
-    this._sideB = new MixtapeSide("B", DEFAULT_TAPE_SIDE_LENGTH_IN_SECONDS);
+    this._aSide = new MixtapeSide("A", DEFAULT_TAPE_SIDE_LENGTH_IN_SECONDS);
+    this._bSide = new MixtapeSide("B", DEFAULT_TAPE_SIDE_LENGTH_IN_SECONDS);
     this._totalLength =
-      this._sideA.secondsRemaining + this._sideB.secondsRemaining;
+      this._aSide.secondsRemaining + this._bSide.secondsRemaining;
     this._lastRecordedOnSide = "A";
     this._trackSet = new Set();
     this._lastTrackIdAdded = "";
@@ -159,9 +159,9 @@ class Mixtape {
     let trackSide;
 
     if (side === "A") {
-      trackSide = this._sideA;
+      trackSide = this._aSide;
     } else {
-      trackSide = this._sideB;
+      trackSide = this._bSide;
     }
 
     return trackSide;
@@ -240,12 +240,12 @@ class Mixtape {
 
     let secondsRemaining = 0; // TODO this is currently unused outside of this method and can be removed
 
-    if (side === "A" && this._sideA.secondsRemaining > 0) {
-      trackNbr = this._sideA.tracks.length + 1;
-      secondsRemaining = this._sideA.secondsRemaining;
-    } else if (side === "B" && this._sideB.secondsRemaining > 0) {
-      trackNbr = this._sideB.tracks.length + 1;
-      secondsRemaining = this._sideA.secondsRemaining;
+    if (side === "A" && this._aSide.secondsRemaining > 0) {
+      trackNbr = this._aSide.tracks.length + 1;
+      secondsRemaining = this._aSide.secondsRemaining;
+    } else if (side === "B" && this._bSide.secondsRemaining > 0) {
+      trackNbr = this._bSide.tracks.length + 1;
+      secondsRemaining = this._aSide.secondsRemaining;
     } else {
       console.error(`Invalid side value: ${side}`);
     }
@@ -253,18 +253,18 @@ class Mixtape {
     return { side, trackNbr, secondsRemaining };
   }
 
-  getSideATracks(): IMixtapeTrack[] {
+  getASideTracks(): IMixtapeTrack[] {
     return this.getSide("A").tracks.map((track) => track.toJSON());
   }
 
-  getSideBTracks(): IMixtapeTrack[] {
+  getBSideTracks(): IMixtapeTrack[] {
     return this.getSide("B").tracks.map((track) => track.toJSON());
   }
 
   getTimeRemaining() {
     return {
-      sideA: this.getSide("A").secondsRemaining,
-      sideB: this.getSide("B").secondsRemaining,
+      aSide: this.getSide("A").secondsRemaining,
+      bSide: this.getSide("B").secondsRemaining,
     };
   }
 
