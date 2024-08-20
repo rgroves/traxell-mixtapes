@@ -10,7 +10,7 @@ import { formatSecondsToTimeDisplay } from "../../utils";
 
 type CustomHitsProps = {
   addErrorMsg: string;
-  addTrack: (hit: IMixtapeTrack) => ITrackAddedStatus; // TODO how can we type this as a track?
+  addTrack: (hit: IMixtapeTrack) => ITrackAddedStatus;
   isTrackPresent: (trackId: string) => boolean;
   onHitClick?: (hit: IMixtapeTrack) => void;
 } & UseHitsProps<IMixtapeTrack & { image: string }>;
@@ -55,7 +55,7 @@ export const CustomHits = (props: CustomHitsProps) => {
 
                   if (onHitClick) {
                     onHitClick(hit);
-                    sendEvent("click", hit, "Hit Clicked");
+                    sendEvent("click", hit, "Track Playlisted");
                   }
 
                   // TODO need data validation on external Algolia data

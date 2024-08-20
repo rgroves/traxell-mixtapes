@@ -1,4 +1,5 @@
 import { useState } from "react";
+import aa from "search-insights";
 import CustomSink from "./components/algolia/CustomSink";
 import { Search } from "./components/algolia/Search";
 import MixtapeContext from "./components/MixtapeProvider";
@@ -8,7 +9,14 @@ import TrackSlot, {
   type DisplayTrackSlot,
 } from "./components/TrackSlot";
 import TrackSlotList from "./components/TrackSlotList";
-import { algRegCheck, algRegKey, algRegister } from "./data/algolia";
+import {
+  algAppId,
+  algIndexName,
+  algPublicApiKey,
+  algRegCheck,
+  algRegKey,
+  algRegister,
+} from "./data/algolia";
 import Mixtape, {
   type IMixtapeTrack,
   type ITrackAddedStatus,
@@ -81,6 +89,7 @@ export interface IMixtapeUIState {
   timeRemaining: { aSide: number; bSide: number };
 }
 
+aa("init", { appId: algAppId, apiKey: algPublicApiKey });
 const blankTape = new Mixtape();
 
 function App() {
@@ -93,8 +102,10 @@ function App() {
   });
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const [algDataKey, setAlgDataKey] = useState("");
+  const [hasPurchased, setHasPurchased] = useState(false);
 
-  const restart = () => {
+  const handleRestart = () => {
+    setHasPurchased(false);
     const blankTape = new Mixtape();
     setMixtapeUIState({
       mixtape: blankTape,
@@ -108,6 +119,7 @@ function App() {
   const addTrack = (
     track: Omit<IMixtapeTrack, "trackNbr"> // TODO track down why the need to omit trackNbr
   ): ITrackAddedStatus => {
+    setHasPurchased(false);
     let status;
     const tapeLength = mixtapeUIState.mixtape.totalLength;
     if (!algRegCheck(track)) {
@@ -189,6 +201,15 @@ function App() {
 
   const handlePurchaseClick = () => {
     setShowPurchaseModal(true);
+    if (!hasPurchased) {
+      setHasPurchased(true);
+      aa("convertedObjectIDs", {
+        userToken: mixtapeUIState.mixtape.id,
+        eventName: "Playlist Purchased",
+        index: algIndexName,
+        objectIDs: Array.from(mixtapeUIState.mixtape.getAllTrackIds()),
+      });
+    }
   };
 
   return (
@@ -246,7 +267,7 @@ function App() {
               backgroundColor: "var(--button-color-secondary)",
               color: "var(--color-accent-secondary)",
             }}
-            onClick={restart}
+            onClick={handleRestart}
           >
             Start A New Mixtape
           </button>

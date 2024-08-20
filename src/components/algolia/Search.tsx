@@ -7,7 +7,12 @@ import { MultipleQueriesQuery } from "@algolia/client-search";
 import "./Search.css";
 import MixtapeContext from "../MixtapeProvider";
 import type { InstantSearchProps } from "react-instantsearch";
-import { algQuerySink, algAppId, algPublicApiKey } from "../../data/algolia";
+import {
+  algQuerySink,
+  algAppId,
+  algPublicApiKey,
+  algIndexName,
+} from "../../data/algolia";
 import CustomRecommendNextTrack from "./CustomRecommendNextTrack";
 import { IMixtapeTrack } from "../../data/Mixtape";
 import { MultipleQueriesResponse } from "@algolia/client-search";
@@ -95,9 +100,10 @@ export const Search = () => {
     <>
       <InstantSearch
         searchClient={searchClient as SearchClient}
-        indexName="track-data-for-algolia"
+        indexName={algIndexName}
         future={{ preserveSharedStateOnUnmount: true }}
         onStateChange={onStateChange}
+        insights={true}
       >
         <Configure hitsPerPage={5} />
         <div className="ais-InstantSearch">

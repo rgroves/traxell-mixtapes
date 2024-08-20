@@ -143,8 +143,10 @@ class Mixtape {
   _totalLength: number;
   _trackSet: Set<string>;
   _lastTrackIdAdded: string;
+  _id: string;
 
   constructor(title?: string) {
+    this._id = crypto.randomUUID();
     this.title = title ?? DEFAULT_TITLE;
     this._aSide = new MixtapeSide("A", DEFAULT_TAPE_SIDE_LENGTH_IN_SECONDS);
     this._bSide = new MixtapeSide("B", DEFAULT_TAPE_SIDE_LENGTH_IN_SECONDS);
@@ -165,6 +167,10 @@ class Mixtape {
     }
 
     return trackSide;
+  }
+
+  get id() {
+    return this._id;
   }
 
   get lastRecordedSide() {
@@ -266,6 +272,10 @@ class Mixtape {
       aSide: this.getSide("A").secondsRemaining,
       bSide: this.getSide("B").secondsRemaining,
     };
+  }
+
+  getAllTrackIds() {
+    return this._trackSet.keys();
   }
 
   hasRoomForTrack(side: MixtapeSideLabel, duration: number) {
