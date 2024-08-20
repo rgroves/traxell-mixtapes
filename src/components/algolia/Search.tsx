@@ -69,6 +69,7 @@ export const Search = () => {
     getLastTrackIdAdded,
   } = useContext(MixtapeContext);
   const [addErrorMsg, setAddErrorMsg] = useState("");
+  const [showRecommendations, setShowRecommendations] = useState(true);
   const algSinkTest = mixtapeAddTrack;
   const lastSelectedId = getLastTrackIdAdded();
   const addTrack = (hit: IMixtapeTrack) => {
@@ -89,6 +90,11 @@ export const Search = () => {
       setAddErrorMsg("");
     }
     algQuerySink(uiState, algSinkTest);
+    if ((uiState[algIndexName]?.query ?? "").trim()?.length == 0) {
+      setShowRecommendations(true);
+    } else {
+      setShowRecommendations(false);
+    }
     setUiState(uiState);
   };
 
@@ -116,22 +122,17 @@ export const Search = () => {
           />
           {lastSelectedId && (
             <CustomRecommendNextTrack
+              opened={showRecommendations}
               objectIDs={[getLastTrackIdAdded()]}
               addErrorMsg={addErrorMsg}
               addTrack={addTrack}
               isTrackPresent={isTrackPresent}
-              // onHitClick={(hit) => {
-              //   console.log(`recommended clicked: ${JSON.stringify(hit)}`);
-              // }}
             />
           )}
           <CustomHits
             addErrorMsg={addErrorMsg}
             addTrack={addTrack}
             isTrackPresent={isTrackPresent}
-            // onHitClick={(hit) => {
-            //   console.log(`result clicked: ${JSON.stringify(hit)}`);
-            // }}
           />
           {/* Add pagination (https://www.algolia.com/doc/guides/building-search-ui/getting-started/react/#paginate-your-results)
               ...or maybe infinite hits. (https://www.algolia.com/doc/api-reference/widgets/infinite-hits/react/)

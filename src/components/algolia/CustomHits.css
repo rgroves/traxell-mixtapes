@@ -16,7 +16,7 @@ div.ais-Hits {
   flex-direction: column;
   margin-bottom: 1em;
   margin-left: 0;
-  margin-top: 0;
+  margin-top: 1.75rem;
 }
 
 .ais-Hits-list .ais-Hits-item {

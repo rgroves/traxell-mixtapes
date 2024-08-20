@@ -9,9 +9,10 @@ import { formatSecondsToTimeDisplay } from "../../utils";
 import "./CustomRecommendNextTrack.css";
 
 type CustomRecommendNextTrackProps = {
+  opened: boolean;
   objectIDs: string[];
   addErrorMsg: string;
-  addTrack: (hit: IMixtapeTrack) => ITrackAddedStatus; // TODO how can we type this as a track?
+  addTrack: (hit: IMixtapeTrack) => ITrackAddedStatus;
   isTrackPresent: (trackId: string) => boolean;
   onHitClick?: (hit: IMixtapeTrack) => void;
 } & UseFrequentlyBoughtTogetherProps;
@@ -19,8 +20,14 @@ type CustomRecommendNextTrackProps = {
 export default function CustomRecommendNextTrack(
   props: CustomRecommendNextTrackProps
 ) {
-  const { objectIDs, addErrorMsg, addTrack, isTrackPresent, onHitClick } =
-    props;
+  const {
+    opened,
+    objectIDs,
+    addErrorMsg,
+    addTrack,
+    isTrackPresent,
+    onHitClick,
+  } = props;
   const filteredObjectIDs = algBypassFilter(objectIDs);
 
   if (filteredObjectIDs.length === 0) {
@@ -43,7 +50,7 @@ export default function CustomRecommendNextTrack(
     // This needs to be smart (collapse or )
     <>
       {(filteredItems.length > 0 || addErrorMsg) && (
-        <details className="recommend-details" open={true}>
+        <details className="recommend-details" open={opened}>
           <summary>Select a recommended next track or search above</summary>
           <div className="ais-FrequentlyBoughtTogether">
             <ol className="ais-FrequentlyBoughtTogether-list">
