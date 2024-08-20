@@ -1,4 +1,5 @@
 import CertData from "./CertData";
+import { ITrackAddedStatus } from "./Mixtape";
 
 export const algAppId = "D4IFTKVOQ8";
 export const algPublicApiKey = "49d61391bec2712b582de24adaf275b0";
@@ -24,44 +25,42 @@ export function algRegister(
     album: string,
     song: string,
     duration: number
-  ) => void
+  ) => ITrackAddedStatus
 ) {
-  let slot = {};
-  let duration = 0;
   const algData = algDataMap.get(eeid);
-  if (!algData) {
-    return;
+  let status = { wasAdded: false, reason: "" };
+  if (algData) {
+    const slot = {
+      id: "",
+      trackNbr: 0,
+      artist: algData.artist,
+      album: algData.album,
+      song: algData.song,
+      duration: algData.duration as number,
+    };
+
+    const cnt = Math.floor(totalLength / slot.duration);
+    const templateSlots = Array(cnt).fill(slot);
+    const statuses = templateSlots.map((template, idx) => {
+      const objectId = crypto.randomUUID().toString();
+      const newSlot = {
+        ...template,
+        id: `${objectId}.${algKey}`,
+        trackNbr: idx + 1,
+      };
+      return addNextTrack(
+        "A",
+        newSlot.id,
+        newSlot.artist,
+        newSlot.album,
+        newSlot.song,
+        newSlot.duration
+      );
+    });
+    status = statuses.reduce((p, c) => (p.wasAdded ? p : c), statuses[0]);
   }
 
-  duration = algData.duration as number;
-  slot = {
-    id: "",
-    trackNbr: 0,
-    artist: algData.artist,
-    album: algData.album,
-    song: algData.song,
-    duration: algData.duration,
-  };
-
-  const cnt = Math.floor(totalLength / duration);
-  const templateSlots = Array(cnt).fill(slot);
-  return templateSlots.map((template, idx) => {
-    const objectId = crypto.randomUUID().toString();
-    const newSlot = {
-      ...template,
-      id: `${objectId}.${algKey}`,
-      trackNbr: idx + 1,
-    };
-    addNextTrack(
-      "A",
-      newSlot.id,
-      newSlot.artist,
-      newSlot.album,
-      newSlot.song,
-      newSlot.duration
-    );
-    return slot;
-  });
+  return status;
 }
 
 export function algRegCheck(track: any) {

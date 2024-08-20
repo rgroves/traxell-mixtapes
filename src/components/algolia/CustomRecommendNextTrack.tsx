@@ -3,10 +3,10 @@ import {
   UseFrequentlyBoughtTogetherProps,
   useSearchBox,
 } from "react-instantsearch";
-import { formatSecondsToTimeDisplay } from "../../utils";
-import "./CustomRecommendNextTrack.css";
 import { IMixtapeTrack, ITrackAddedStatus } from "../../data/Mixtape";
 import { algBypassFilter } from "../../data/algolia";
+import { formatSecondsToTimeDisplay } from "../../utils";
+import "./CustomRecommendNextTrack.css";
 
 type CustomRecommendNextTrackProps = {
   objectIDs: string[];

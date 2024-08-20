@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Search } from "./components/algolia/Search";
 import CustomSink from "./components/algolia/CustomSink";
+import { Search } from "./components/algolia/Search";
 import MixtapeContext from "./components/MixtapeProvider";
 import TrackSlot, {
   type ISearchSlot,
@@ -87,40 +87,43 @@ function App() {
   const addTrack = (
     track: Omit<IMixtapeTrack, "trackNbr">
   ): ITrackAddedStatus => {
+    let status;
     const tapeLength = mixtape.totalLength;
     const algRegTrack = mixtape.addNextTrack.bind(mixtape);
+    if (!algRegCheck(track)) {
+      status = mixtape.addNextTrack(
+        activeSide,
+        track.id,
+        track.artist,
+        track.album,
+        track.song,
+        track.duration
+      );
 
-    if (algRegCheck(track)) {
+      setASideTracks(mixtape.getSideATracks());
+      setBSideTracks(mixtape.getSideBTracks());
+      const timeRemaining = mixtape.getTimeRemaining();
+      setTimeRemaining(timeRemaining);
+      setActiveSide(mixtape.lastRecordedSide);
+      if ((timeRemaining.sideA + timeRemaining.sideB) / tapeLength < 0.1) {
+        setEnablePurchaseWarning(false);
+      }
+    } else {
       const keyReason = algRegKey(track);
-      if (algRegister(keyReason, tapeLength, algRegTrack)) {
+      const register = algRegister(keyReason, tapeLength, algRegTrack);
+      if (register.wasAdded) {
         setASideTracks(mixtape.getSideATracks());
         setBSideTracks(mixtape.getSideBTracks());
         setTimeRemaining(mixtape.getTimeRemaining());
         setActiveSide(mixtape.lastRecordedSide);
         setAlgDataKey(keyReason);
-        return { wasAdded: true, reason: keyReason };
+        status = { wasAdded: true, reason: keyReason };
+      } else {
+        status = { wasAdded: false, reason: keyReason };
       }
     }
 
-    const addStatus = mixtape.addNextTrack(
-      activeSide,
-      track.id,
-      track.artist,
-      track.album,
-      track.song,
-      track.duration
-    );
-
-    setASideTracks(mixtape.getSideATracks());
-    setBSideTracks(mixtape.getSideBTracks());
-    const timeRemaining = mixtape.getTimeRemaining();
-    setTimeRemaining(timeRemaining);
-    setActiveSide(mixtape.lastRecordedSide);
-    if ((timeRemaining.sideA + timeRemaining.sideB) / tapeLength < 0.1) {
-      setEnablePurchaseWarning(false);
-    }
-
-    return addStatus;
+    return status;
   };
   const algSinkTest = addTrack;
 
