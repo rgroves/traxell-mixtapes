@@ -6,7 +6,7 @@ import { CustomHits } from "./CustomHits";
 import { MultipleQueriesQuery } from "@algolia/client-search";
 import "./Search.css";
 import MixtapeContext from "../MixtapeProvider";
-import type { InstantSearchProps } from "react-instantsearch";
+import { type InstantSearchProps } from "react-instantsearch";
 import {
   algQuerySink,
   algAppId,

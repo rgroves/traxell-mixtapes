@@ -1,4 +1,4 @@
-import { formatSecondsToTimeDisplay } from "../utils";
+import { formatSecondsToTimeDisplay } from "../utils/general";
 import "./TrackSlot.css";
 
 export interface ITrackSlot {

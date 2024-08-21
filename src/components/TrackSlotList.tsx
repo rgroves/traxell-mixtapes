@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { formatSecondsToTimeDisplay } from "../utils";
+import { formatSecondsToTimeDisplay } from "../utils/general";
 import { type IMixtapeUIState } from "../App";
 import { type MixtapeSideLabel } from "../data/Mixtape";
 import "./TrackSlotList.css";

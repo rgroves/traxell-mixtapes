@@ -5,7 +5,7 @@ import {
 } from "react-instantsearch";
 import { IMixtapeTrack, ITrackAddedStatus } from "../../data/Mixtape";
 import { algBypassFilter } from "../../data/algolia";
-import { forceHttps, formatSecondsToTimeDisplay } from "../../utils";
+import { forceHttps, formatSecondsToTimeDisplay } from "../../utils/general";
 import "./CustomRecommendNextTrack.css";
 
 type CustomRecommendNextTrackProps = {

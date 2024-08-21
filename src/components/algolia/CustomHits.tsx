@@ -6,7 +6,7 @@ import {
 } from "react-instantsearch";
 import "./CustomHits.css";
 import { IMixtapeTrack, ITrackAddedStatus } from "../../data/Mixtape";
-import { forceHttps, formatSecondsToTimeDisplay } from "../../utils";
+import { forceHttps, formatSecondsToTimeDisplay } from "../../utils/general";
 
 type CustomHitsProps = {
   addErrorMsg: string;
