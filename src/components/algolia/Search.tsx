@@ -3,7 +3,6 @@ import algoliasearch, { type SearchClient } from "algoliasearch/lite";
 import "instantsearch.css/themes/algolia.css";
 import { InstantSearch, SearchBox, Configure } from "react-instantsearch";
 import { CustomHits } from "./CustomHits";
-import { MultipleQueriesQuery } from "@algolia/client-search";
 import "./Search.css";
 import MixtapeContext from "../MixtapeProvider";
 import { type InstantSearchProps } from "react-instantsearch";
@@ -15,52 +14,10 @@ import {
 } from "../../data/algolia";
 import CustomRecommendNextTrack from "./CustomRecommendNextTrack";
 import { IMixtapeTrack } from "../../data/Mixtape";
-import { MultipleQueriesResponse } from "@algolia/client-search";
+import { createSearchProxy } from "../../utils/searchProxy";
 
-const algoliaClient = algoliasearch(algAppId, algPublicApiKey);
-
-let timerId = 0;
-const timeout = 275;
-
-const searchClient = {
-  ...algoliaClient,
-  async search(
-    requests: MultipleQueriesQuery[]
-  ): Promise<Readonly<MultipleQueriesResponse<IMixtapeTrack>>> {
-    clearTimeout(timerId);
-    const asyncDebouncedResult = new Promise<
-      Readonly<MultipleQueriesResponse<IMixtapeTrack>>
-    >((resolve) => {
-      timerId = window.setTimeout(() => {
-        if (requests.every(({ params }) => !params?.query?.trim())) {
-          // If there is no query text input, return an empty (mock) result.
-          resolve({
-            results: requests.map(() => ({
-              hits: [],
-              nbHits: 0,
-              nbPages: 0,
-              page: 0,
-              processingTimeMS: 0,
-              hitsPerPage: 0,
-              exhaustiveNbHits: false,
-              query: "",
-              params: "",
-            })),
-          });
-        } else {
-          // There is query text input, so send search request.
-          const searchResults = algoliaClient.search<IMixtapeTrack>(
-            requests,
-            {}
-          );
-          resolve(searchResults);
-        }
-      }, timeout);
-    });
-
-    return await asyncDebouncedResult;
-  },
-};
+const algoliaClient: SearchClient = algoliasearch(algAppId, algPublicApiKey);
+const searchClient = createSearchProxy<IMixtapeTrack>(algoliaClient);
 
 export const Search = () => {
   const {
@@ -105,7 +62,7 @@ export const Search = () => {
   return (
     <>
       <InstantSearch
-        searchClient={searchClient as SearchClient}
+        searchClient={searchClient}
         indexName={algIndexName}
         future={{ preserveSharedStateOnUnmount: true }}
         onStateChange={onStateChange}
