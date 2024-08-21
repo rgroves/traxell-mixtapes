@@ -4,7 +4,6 @@ import {
   useSearchBox,
 } from "react-instantsearch";
 import { IMixtapeTrack, ITrackAddedStatus } from "../../data/Mixtape";
-import { algBypassFilter } from "../../data/algolia";
 import { forceHttps, formatSecondsToTimeDisplay } from "../../utils/general";
 import "./CustomRecommendNextTrack.css";
 
@@ -28,11 +27,6 @@ export default function CustomRecommendNextTrack(
     isTrackPresent,
     onHitClick,
   } = props;
-  const filteredObjectIDs = algBypassFilter(objectIDs);
-
-  if (filteredObjectIDs.length === 0) {
-    return <></>;
-  }
   const { items } = useFrequentlyBoughtTogether<
     IMixtapeTrack & { image: string }
   >({

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import aa from "search-insights";
-import CustomSink from "./components/algolia/CustomSink";
 import { Search } from "./components/algolia/Search";
 import MixtapeContext from "./components/MixtapeProvider";
 import PurchaseDialog from "./components/PurchaseDialog";
@@ -9,14 +8,7 @@ import TrackSlot, {
   type DisplayTrackSlot,
 } from "./components/TrackSlot";
 import TrackSlotList from "./components/TrackSlotList";
-import {
-  algAppId,
-  algIndexName,
-  algPublicApiKey,
-  algRegCheck,
-  algRegKey,
-  algRegister,
-} from "./data/algolia";
+import { algAppId, algIndexName, algPublicApiKey } from "./data/algolia";
 import Mixtape, {
   type IMixtapeTrack,
   type ITrackAddedStatus,
@@ -101,7 +93,6 @@ function App() {
     timeRemaining: blankTape.getTimeRemaining(),
   });
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
-  const [algDataKey, setAlgDataKey] = useState("");
   const [hasPurchased, setHasPurchased] = useState(false);
 
   const handleRestart = () => {
@@ -120,55 +111,27 @@ function App() {
     track: Omit<IMixtapeTrack, "trackNbr"> // TODO track down why the need to omit trackNbr
   ): ITrackAddedStatus => {
     setHasPurchased(false);
-    let status;
-    const tapeLength = mixtapeUIState.mixtape.totalLength;
-    if (!algRegCheck(track)) {
-      status = mixtapeUIState.mixtape.addNextTrack(
-        mixtapeUIState.activeSide,
-        track.id,
-        track.artist,
-        track.album,
-        track.song,
-        track.duration
-      );
+    let status = mixtapeUIState.mixtape.addNextTrack(
+      mixtapeUIState.activeSide,
+      track.id,
+      track.artist,
+      track.album,
+      track.song,
+      track.duration
+    );
 
-      const timeRemaining = mixtapeUIState.mixtape.getTimeRemaining();
-      setMixtapeUIState((prev): IMixtapeUIState => {
-        return {
-          ...prev,
-          aSideTracks: prev.mixtape.getASideTracks(),
-          bSideTracks: prev.mixtape.getBSideTracks(),
-          timeRemaining: timeRemaining,
-          activeSide: prev.mixtape.lastRecordedSide,
-        };
-      });
-    } else {
-      const keyReason = algRegKey(track);
-      const algRegTrack = mixtapeUIState.mixtape.addNextTrack.bind(
-        mixtapeUIState.mixtape
-      );
-      const register = algRegister(keyReason, tapeLength, algRegTrack);
-      if (register.wasAdded) {
-        setMixtapeUIState((prev): IMixtapeUIState => {
-          return {
-            ...prev,
-            aSideTracks: prev.mixtape.getASideTracks(),
-            bSideTracks: prev.mixtape.getBSideTracks(),
-            timeRemaining: prev.mixtape.getTimeRemaining(),
-            activeSide: prev.mixtape.lastRecordedSide,
-          };
-        });
-
-        setAlgDataKey(keyReason);
-        status = { wasAdded: true, reason: keyReason };
-      } else {
-        status = { wasAdded: false, reason: keyReason };
-      }
-    }
+    setMixtapeUIState((prev): IMixtapeUIState => {
+      return {
+        ...prev,
+        aSideTracks: prev.mixtape.getASideTracks(),
+        bSideTracks: prev.mixtape.getBSideTracks(),
+        timeRemaining: prev.mixtape.getTimeRemaining(),
+        activeSide: prev.mixtape.lastRecordedSide,
+      };
+    });
 
     return status;
   };
-  const algSinkTest = addTrack;
 
   const isTrackPresent = (trackId: string) => {
     return mixtapeUIState.mixtape.isTrackPresent(trackId);
@@ -218,7 +181,6 @@ function App() {
         addTrack,
         isTrackPresent,
         getLastTrackIdAdded: () => mixtapeUIState.mixtape.lastTrackIdAdded,
-        algSinkTest,
       }}
     >
       <main>
@@ -231,9 +193,6 @@ function App() {
             onClick={handleTrackSlotSwitching}
           />
         </div>
-        {algDataKey && (
-          <CustomSink algDataKey={algDataKey} setShowDisplay={setAlgDataKey} />
-        )}
         <div className="track-slot-list-container">
           <TrackSlotList label="A" mixtapeUIState={mixtapeUIState}>
             {mixtapeUIState.aSideTracks.map((track) => (

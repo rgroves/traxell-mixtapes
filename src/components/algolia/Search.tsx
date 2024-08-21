@@ -6,12 +6,7 @@ import { CustomHits } from "./CustomHits";
 import "./Search.css";
 import MixtapeContext from "../MixtapeProvider";
 import { type InstantSearchProps } from "react-instantsearch";
-import {
-  algQuerySink,
-  algAppId,
-  algPublicApiKey,
-  algIndexName,
-} from "../../data/algolia";
+import { algAppId, algPublicApiKey, algIndexName } from "../../data/algolia";
 import CustomRecommendNextTrack from "./CustomRecommendNextTrack";
 import { IMixtapeTrack } from "../../data/Mixtape";
 import { createSearchProxy } from "../../utils/searchProxy";
@@ -27,7 +22,6 @@ export const Search = () => {
   } = useContext(MixtapeContext);
   const [addErrorMsg, setAddErrorMsg] = useState("");
   const [showRecommendations, setShowRecommendations] = useState(true);
-  const algSinkTest = mixtapeAddTrack;
   const lastSelectedId = getLastTrackIdAdded();
   const addTrack = (hit: IMixtapeTrack) => {
     const addStatus = mixtapeAddTrack(hit);
@@ -46,7 +40,6 @@ export const Search = () => {
     if (addErrorMsg) {
       setAddErrorMsg("");
     }
-    algQuerySink(uiState, algSinkTest);
     if ((uiState[algIndexName]?.query ?? "").trim()?.length == 0) {
       setShowRecommendations(true);
     } else {

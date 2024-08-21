@@ -1,12 +1,10 @@
 import { createContext } from "react";
 import { IMixtapeTrack, ITrackAddedStatus } from "../data/Mixtape";
-import { AlgSinkMethod } from "../data/algolia";
 
 interface IMixtapeContext {
   addTrack: (track: Omit<IMixtapeTrack, "trackNbr">) => ITrackAddedStatus;
   isTrackPresent: (trackId: string) => boolean;
   getLastTrackIdAdded: () => string;
-  algSinkTest: AlgSinkMethod;
 }
 
 const NullMixtapeContext: IMixtapeContext = {
@@ -22,13 +20,6 @@ const NullMixtapeContext: IMixtapeContext = {
       "MixtapeContext was not initialized. (isTrackPresnt not set)"
     );
     return false;
-  },
-  algSinkTest: () => {
-    console.error("MixtapeContext.algSinkTest not set!");
-    return {
-      wasAdded: false,
-      reason: "MixtapeContext was not initialized. (algSinkTest not set)",
-    };
   },
   getLastTrackIdAdded: () => {
     console.error("MixtapeContext.getLastTrackIdAdded not set!");
