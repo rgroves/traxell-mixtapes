@@ -18,7 +18,6 @@ export type MixtapeSideLabel = "A" | "B";
 interface INextAvailableTrack {
   side: MixtapeSideLabel;
   trackNbr: number;
-  secondsRemaining: number;
 }
 
 export interface ITrackAddedStatus {
@@ -199,7 +198,7 @@ class Mixtape {
     };
 
     if (!this._trackSet.has(id)) {
-      const { trackNbr } = this.getNextEmptyTrack(side);
+      let { trackNbr } = this.getNextEmptyTrack(side);
       let recordOnSide = side;
 
       if (
@@ -207,6 +206,7 @@ class Mixtape {
         !this.hasRoomForTrack(recordOnSide, duration)
       ) {
         recordOnSide = "B";
+        trackNbr = this.getNextEmptyTrack(recordOnSide).trackNbr;
       }
 
       if (
@@ -244,19 +244,15 @@ class Mixtape {
   getNextEmptyTrack(side: MixtapeSideLabel): INextAvailableTrack {
     let trackNbr = 0;
 
-    let secondsRemaining = 0; // TODO this is currently unused outside of this method and can be removed
-
     if (side === "A" && this._aSide.secondsRemaining > 0) {
       trackNbr = this._aSide.tracks.length + 1;
-      secondsRemaining = this._aSide.secondsRemaining;
     } else if (side === "B" && this._bSide.secondsRemaining > 0) {
       trackNbr = this._bSide.tracks.length + 1;
-      secondsRemaining = this._aSide.secondsRemaining;
     } else {
       console.error(`Invalid side value: ${side}`);
     }
 
-    return { side, trackNbr, secondsRemaining };
+    return { side, trackNbr };
   }
 
   getASideTracks(): IMixtapeTrack[] {

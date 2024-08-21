@@ -39,7 +39,7 @@ function TrackSlot({ track }: ITrackSlotProps) {
     className = "track-slot-search";
     children = (
       <>
-        {/* <div className="track-number">{track.trackNbr}.</div> */}
+        <div className="track-number">{track.trackNbr}.</div>
         <div>&nbsp;</div>
         <div className="track-search">{track.search}</div>
       </>
@@ -48,7 +48,7 @@ function TrackSlot({ track }: ITrackSlotProps) {
     className = "track-slot-song";
     children = (
       <>
-        {/* <div className="track-number">{track.trackNbr}.</div> */}
+        <div className="track-number">{track.trackNbr}.</div>
         <div className="track-name">{track.song}</div>
         <div className="track-artist">{track.artist}</div>
         <div className="track-album">{track.album}</div>
