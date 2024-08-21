@@ -40,7 +40,6 @@ function TrackSlot({ track }: ITrackSlotProps) {
     children = (
       <>
         <div className="track-number">{track.trackNbr}.</div>
-        <div>&nbsp;</div>
         <div className="track-search">{track.search}</div>
       </>
     );
