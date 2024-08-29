@@ -66,6 +66,10 @@ class MixtapeTrack {
     this._duration = duration;
   }
 
+  get id() {
+    return this._id;
+  }
+
   get song() {
     return this._song;
   }
@@ -125,7 +129,7 @@ class MixtapeSide {
       );
       this._secondsRemaining -= duration;
       wasAdded = true;
-      reason = "success";
+      reason = "";
     } else {
       reason = `${this._label}-Side does not have enough room left for chosen song.`;
     }
@@ -255,6 +259,11 @@ class Mixtape {
     return { side, trackNbr };
   }
 
+  getLastRecordedTrackId(side: MixtapeSideLabel): string {
+    const tracks = side === "A" ? this._aSide.tracks : this._bSide.tracks;
+    return tracks.length > 0 ? tracks[tracks.length - 1].id : "";
+  }
+
   getASideTracks(): IMixtapeTrack[] {
     return this.getSide("A").tracks.map((track) => track.toJSON());
   }
@@ -263,11 +272,8 @@ class Mixtape {
     return this.getSide("B").tracks.map((track) => track.toJSON());
   }
 
-  getTimeRemaining() {
-    return {
-      aSide: this.getSide("A").secondsRemaining,
-      bSide: this.getSide("B").secondsRemaining,
-    };
+  getTapeRemainingSeconds(side: MixtapeSideLabel) {
+    return this.getSide(side).secondsRemaining;
   }
 
   getAllTrackIds() {

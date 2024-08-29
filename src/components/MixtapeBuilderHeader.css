@@ -1,0 +1,60 @@
+.mixtape-builder-header {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  font-family: monospace;
+  line-height: 1.5em;
+}
+
+.mixtape-builder-header__side-switcher {
+  padding: 1rem;
+  margin-block-end: 0.5rem;
+  text-wrap: nowrap;
+}
+
+.mixtape-builder-header__active-side {
+  background-color: var(--color-accent-primary);
+  color: var(--color-accent-secondary);
+  border-radius: 50%;
+  font-weight: bold;
+  padding: 0.25em 0.5em;
+}
+
+@media (min-width: 480px) {
+  .mixtape-builder-header {
+    flex-direction: row;
+    gap: 1rem;
+    text-align: left;
+    text-wrap: balance;
+    font-size: smaller;
+    line-height: 1.1em;
+  }
+
+  .mixtape-builder-header__side-switcher {
+    width: 100%;
+    max-width: 25ch;
+    padding: 0.25rem;
+    margin-block-end: 0;
+  }
+
+  .mixtape-builder-header__powered-by-msg {
+    text-align: left;
+  }
+}
+
+@media (min-width: 768px) {
+  .mixtape-builder-header {
+    font-size: unset;
+    gap: 3rem;
+  }
+
+  .mixtape-builder-header__time-remaining {
+    text-align: center;
+  }
+
+  .mixtape-builder-header__powered-by-msg {
+    text-align: center;
+  }
+}

@@ -7,7 +7,7 @@ export function formatSecondsToTimeDisplay(duration: number): string {
   if (duration > SECONDS_IN_24_HOURS) {
     displayTime = "[WO:AH:!!]";
   } else if (duration === 0) {
-    displayTime = "[?:??]";
+    displayTime = "[0:00]";
   } else {
     const hours = Math.max(0, Math.floor(duration / SECONDS_IN_1_HOUR));
     const minutes = Math.max(
@@ -22,9 +22,7 @@ export function formatSecondsToTimeDisplay(duration: number): string {
         ? `${minutes.toString()}:`
         : `${minutes.toString().padStart(2, "0")}:`;
     const ss = seconds.toString().padStart(2, "0");
-    const hhmmss = `${hh}${mm}${ss}`;
-
-    displayTime = `[${hhmmss}]`;
+    displayTime = `[${hh}${mm}${ss}]`;
   }
 
   return displayTime;
@@ -32,4 +30,39 @@ export function formatSecondsToTimeDisplay(duration: number): string {
 
 export function forceHttps(url: string) {
   return url.startsWith("https:") ? url : url.replace("http:", "https:");
+}
+
+/**
+ * The code below from Algolia Samples:
+ * https://github.com/algolia/doc-code-samples/tree/master/react-instantsearch/facet-dropdown
+ */
+import { Children, isValidElement, ReactNode } from "react";
+
+export function cx(
+  ...classNames: Array<string | number | boolean | undefined | null>
+) {
+  return classNames.filter(Boolean).join(" ");
+}
+
+export function capitalize(value: string) {
+  if (typeof value !== "string") return "";
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+export function getFirstChildPropValue(
+  children: ReactNode,
+  propNameCb: (props: any) => string
+): string | string[] | undefined {
+  let propValue = undefined;
+
+  Children.forEach(children, (element) => {
+    if (!isValidElement(element)) return;
+    const propName = propNameCb(element.props);
+    if (propName in element.props) {
+      propValue = element.props[propName];
+      return;
+    }
+  });
+
+  return propValue;
 }

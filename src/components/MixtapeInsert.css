@@ -1,0 +1,52 @@
+:root {
+  --mixtape-insert--folds-color: var(--color-accent-primary);
+  --mixtape-insert--outlines-color: var(--color-accent-primary);
+  --mixtape-insert__title--bg-color: light-dark(#fff, #000);
+  --mixtape-insert__title--color: light-dark(#000, #fff);
+  --mixtape-insert__side-label--color: light-dark(#000, #fff);
+  --mixtape-insert__side-label--bg-color: light-dark(#fff, #000);
+  --mixtape-insert__side-label-letter--color: light-dark(#fff, #000);
+  --mixtape-insert__side-label-letter--bg-color: light-dark(#000, #fff);
+}
+
+.mixtape-insert,
+.mixtape-insert > * {
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.mixtape-insert {
+  border: 2px solid var(--mixtape-insert--outlines-color);
+  max-width: 70ch;
+  width: 100%;
+}
+
+.mixtape-insert__title {
+  background-color: var(--mixtape-insert__title--bg-color);
+  color: var(--mixtape-insert__title--color);
+  font-size: 2.5rem;
+  line-height: 1.5em;
+  padding: 0.5em;
+  text-align: center;
+  text-wrap: pretty;
+}
+
+.mixtape-insert__side-label {
+  background-color: var(--mixtape-insert__side-label--bg-color);
+  border-bottom: 2px solid var(--mixtape-insert--outlines-color);
+  border-top: 2px dashed var(--mixtape-insert--folds-color);
+  color: var(--mixtape-insert__side-label--color);
+  margin: 0;
+  padding: 0.5em;
+}
+
+.mixtape-insert__side-label-letter {
+  background-color: var(--mixtape-insert__side-label-letter--bg-color);
+  color: var(--mixtape-insert__side-label-letter--color);
+  display: inline-block;
+  border-radius: 100%;
+  padding: 0.5em 0.75em;
+  line-height: 1em;
+}

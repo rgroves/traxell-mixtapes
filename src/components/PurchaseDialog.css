@@ -1,25 +1,29 @@
 .purchase-dialog {
-  min-width: 35ch;
+  max-width: 40;
   text-wrap: pretty;
 }
 
 .cart {
   text-align: left;
-  margin: 2rem;
+  margin: 1rem;
 }
 
 .cart-items {
   list-style-type: none;
+  padding: 0;
 }
 
 .cart-item,
+.fee,
 .total-line {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 1rem;
+  align-items: center;
 }
 
-.track-detail {
+.track-detail,
+fee-detail {
   padding: 0 1rem 0 0;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -27,10 +31,10 @@
 }
 
 .total-line {
+  margin: 0;
   border-top: 1px solid var(--color-accent-primary);
 }
 
 .purchase-msg {
   margin: 1.5rem auto;
-  width: 55ch;
 }

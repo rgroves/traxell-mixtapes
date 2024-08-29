@@ -1,20 +1,43 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1.5rem;
+}
+
+main {
+  max-width: 40ch;
+}
+
+header,
+footer {
   text-align: center;
+  text-wrap: balance;
 }
 
-.track-slot-list-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr 1fr;
+.button-controls {
+  display: flex;
+  flex-direction: column;
 }
 
-@media (min-width: 1024px) {
-  .track-slot-list-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
+.purchase-button:not(:disabled) {
+  background-color: var(--button-color-primary);
+}
+
+.purchase-button {
+  align-self: stretch;
+  color: var(--text-color-primary);
+  margin: 0.5rem 0 0;
+}
+
+.mixtape-reset-button {
+  align-self: stretch;
+  background-color: var(--button-color-secondary);
+  color: var(--text-color-secondary);
+  margin: 0.5rem 0 0;
+}
+
+@media (min-width: 720px) {
+  main {
+    max-width: 80ch;
   }
 }

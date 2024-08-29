@@ -1,236 +1,145 @@
 import { useState } from "react";
 import aa from "search-insights";
-import { Search } from "./components/algolia/Search";
-import MixtapeContext from "./components/MixtapeProvider";
+import Search, { ISearchResult } from "./components/algolia/Search";
+import MixtapeInsert from "./components/MixtapeInsert";
 import PurchaseDialog from "./components/PurchaseDialog";
-import TrackSlot, {
-  type ISearchSlot,
-  type DisplayTrackSlot,
-} from "./components/TrackSlot";
-import TrackSlotList from "./components/TrackSlotList";
 import { algAppId, algIndexName, algPublicApiKey } from "./data/algolia";
 import Mixtape, {
   type IMixtapeTrack,
-  type ITrackAddedStatus,
   type MixtapeSideLabel,
 } from "./data/Mixtape";
-import "./App.css";
-import TrackSlotListSwitcher from "./components/TrackSlotListSwitcher";
-import PurchaseButton from "./components/PurchaseButton";
 
-interface ITrackPosition {
-  side: "A" | "B";
-  trackNbr: number;
-}
-
-const searchDisplaySlot: Omit<ISearchSlot, "trackNbr"> = {
-  id: crypto.randomUUID(),
-  search: <Search />,
-};
-
-function createEmptySlot(trackNbr: number) {
-  return {
-    id: crypto.randomUUID().toString(),
-    trackNbr,
-    artist: "",
-    album: "",
-    song: "",
-    duration: 0,
-  };
-}
-
-const aSideEmptySlots = [
-  createEmptySlot(1),
-  createEmptySlot(2),
-  createEmptySlot(3),
-  createEmptySlot(4),
-  createEmptySlot(5),
-  createEmptySlot(6),
-];
-
-const bSideEmptySlots = [
-  createEmptySlot(1),
-  createEmptySlot(2),
-  createEmptySlot(3),
-  createEmptySlot(4),
-  createEmptySlot(5),
-  createEmptySlot(6),
-];
-
-function getEmptySlots(
-  activeSide: MixtapeSideLabel,
-  curPos: ITrackPosition
-): DisplayTrackSlot[] {
-  const slots = [];
-  const emptySlots = activeSide === "A" ? aSideEmptySlots : bSideEmptySlots;
-
-  if (activeSide === curPos.side) {
-    slots.push({ ...searchDisplaySlot, trackNbr: curPos.trackNbr });
-    slots.push(...emptySlots.slice(curPos.trackNbr));
-  } else {
-    slots.push(...emptySlots.slice(curPos.trackNbr - 1));
-  }
-  return slots;
-}
-
-export interface IMixtapeUIState {
+export interface IMixtapeState {
   mixtape: Mixtape;
   aSideTracks: IMixtapeTrack[];
   bSideTracks: IMixtapeTrack[];
   activeSide: MixtapeSideLabel;
-  timeRemaining: { aSide: number; bSide: number };
+  allTrackIds: Set<string>;
 }
 
 aa("init", { appId: algAppId, apiKey: algPublicApiKey });
-const blankTape = new Mixtape();
 
-function App() {
-  const [mixtapeUIState, setMixtapeUIState] = useState<IMixtapeUIState>({
-    mixtape: blankTape,
+function getNewMixtapeState(): IMixtapeState {
+  return {
+    mixtape: new Mixtape(),
     aSideTracks: [],
     bSideTracks: [],
     activeSide: "A",
-    timeRemaining: blankTape.getTimeRemaining(),
-  });
+    allTrackIds: new Set(),
+  };
+}
+
+function App() {
+  const [mixtapeState, setMixtapeState] = useState<IMixtapeState>(
+    getNewMixtapeState()
+  );
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const [hasPurchased, setHasPurchased] = useState(false);
 
   const handleRestart = () => {
+    setMixtapeState(getNewMixtapeState());
+    setShowPurchaseModal(false);
     setHasPurchased(false);
-    const blankTape = new Mixtape();
-    setMixtapeUIState({
-      mixtape: blankTape,
-      aSideTracks: [],
-      bSideTracks: [],
-      activeSide: "A",
-      timeRemaining: blankTape.getTimeRemaining(),
-    });
   };
 
-  const addTrack = (
-    track: Omit<IMixtapeTrack, "trackNbr"> // TODO track down why the need to omit trackNbr
-  ): ITrackAddedStatus => {
+  const handleTapeSideSwitching = () => {
+    setMixtapeState((prev) => ({
+      ...prev,
+      activeSide: prev.activeSide === "A" ? "B" : "A",
+    }));
+  };
+
+  const handleResultClick = (result: ISearchResult) => {
     setHasPurchased(false);
-    let status = mixtapeUIState.mixtape.addNextTrack(
-      mixtapeUIState.activeSide,
-      track.id,
-      track.artist,
-      track.album,
-      track.song,
-      track.duration
+    const status = mixtapeState.mixtape.addNextTrack(
+      mixtapeState.activeSide,
+      result.objectID,
+      result.artist,
+      result.album,
+      result.song,
+      result.duration
     );
 
-    setMixtapeUIState((prev): IMixtapeUIState => {
-      return {
-        ...prev,
-        aSideTracks: prev.mixtape.getASideTracks(),
-        bSideTracks: prev.mixtape.getBSideTracks(),
-        timeRemaining: prev.mixtape.getTimeRemaining(),
-        activeSide: prev.mixtape.lastRecordedSide,
-      };
-    });
-
-    return status;
+    if (status.wasAdded) {
+      setMixtapeState((prev) => {
+        prev.allTrackIds.add(result.objectID);
+        return {
+          ...prev,
+          aSideTracks: prev.mixtape.getASideTracks(),
+          bSideTracks: prev.mixtape.getBSideTracks(),
+          activeSide: prev.mixtape.lastRecordedSide,
+          allTrackIds: prev.allTrackIds,
+        };
+      });
+    }
   };
 
-  const isTrackPresent = (trackId: string) => {
-    return mixtapeUIState.mixtape.isTrackPresent(trackId);
-  };
+  const searchControl = (
+    <Search
+      activeSide={mixtapeState.activeSide}
+      handleSideSwitch={handleTapeSideSwitching}
+      onResultClick={handleResultClick}
+      filterOutIds={mixtapeState.allTrackIds}
+      lastTrackIdAdded={mixtapeState.mixtape.getLastRecordedTrackId(
+        mixtapeState.activeSide
+      )}
+      secondsRemaining={mixtapeState.mixtape.getTapeRemainingSeconds(
+        mixtapeState.activeSide
+      )}
+    />
+  );
 
-  const aSideEmptySlots = getEmptySlots(mixtapeUIState.activeSide, {
-    side: "A",
-    trackNbr: mixtapeUIState.aSideTracks.length + 1,
-  });
-  const bSideEmptySlots = getEmptySlots(mixtapeUIState.activeSide, {
-    side: "B",
-    trackNbr: mixtapeUIState.bSideTracks.length + 1,
-  });
-
-  const handleTrackSlotSwitching = () => {
-    setMixtapeUIState((prev): IMixtapeUIState => {
-      return {
-        ...prev,
-        activeSide: prev.activeSide === "A" ? "B" : "A",
-      };
-    });
-  };
-
-  const purchasable =
-    mixtapeUIState.aSideTracks.length + mixtapeUIState.bSideTracks.length > 0;
-
+  const purchasable = mixtapeState.allTrackIds.size > 0;
   const purchaseBtnMsg = purchasable
     ? "Purchase Mixtape Tracks"
     : "Add Tracks To Enable Purchase";
 
-  const handlePurchaseClick = () => {
+  const handlePurchase = () => {
     setShowPurchaseModal(true);
     if (!hasPurchased) {
       setHasPurchased(true);
       aa("convertedObjectIDs", {
-        userToken: mixtapeUIState.mixtape.id,
+        userToken: mixtapeState.mixtape.id,
         eventName: "Playlist Purchased",
         index: algIndexName,
-        objectIDs: Array.from(mixtapeUIState.mixtape.getAllTrackIds()),
+        objectIDs: Array.from(mixtapeState.mixtape.getAllTrackIds()),
+        inferQueryID: true,
+      }).catch((reason: unknown) => {
+        console.log(reason);
       });
     }
   };
 
   return (
-    <MixtapeContext.Provider
-      value={{
-        addTrack,
-        isTrackPresent,
-        getLastTrackIdAdded: () => mixtapeUIState.mixtape.lastTrackIdAdded,
-      }}
-    >
-      <main>
+    <>
+      <header>
         <h1>Traxell Mixtapes</h1>
         <h2>Every special moment deserves a mixtape</h2>
+      </header>
+      <main>
+        <MixtapeInsert
+          title={mixtapeState.mixtape.title}
+          aSideTracks={mixtapeState.aSideTracks}
+          bSideTracks={mixtapeState.bSideTracks}
+          defaultTrackSlots={6}
+          searchControl={searchControl}
+          activeTapeSide={mixtapeState.activeSide}
+        />
 
-        <div>
-          <TrackSlotListSwitcher
-            iconDir="down"
-            onClick={handleTrackSlotSwitching}
-          />
-        </div>
-        <div className="track-slot-list-container">
-          <TrackSlotList label="A" mixtapeUIState={mixtapeUIState}>
-            {mixtapeUIState.aSideTracks.map((track) => (
-              <TrackSlot key={track.id} track={track} />
-            ))}
-            {aSideEmptySlots.map((track) => (
-              <TrackSlot key={track.id} track={track} />
-            ))}
-          </TrackSlotList>
-          <TrackSlotList label="B" mixtapeUIState={mixtapeUIState}>
-            {mixtapeUIState.bSideTracks.map((track) => (
-              <TrackSlot key={track.id} track={track} />
-            ))}
-            {bSideEmptySlots.map((track) => (
-              <TrackSlot key={track.id} track={track} />
-            ))}
-          </TrackSlotList>
-        </div>
-        <div>
-          <TrackSlotListSwitcher
-            iconDir="up"
-            onClick={handleTrackSlotSwitching}
-          />
-        </div>
-        <PurchaseButton disabled={!purchasable} onClick={handlePurchaseClick}>
-          {purchaseBtnMsg}
-        </PurchaseButton>
-        <div>
+        <div className="button-controls">
           <button
-            style={{
-              backgroundColor: "var(--button-color-secondary)",
-              color: "var(--color-accent-secondary)",
-            }}
-            onClick={handleRestart}
+            className="purchase-button"
+            disabled={!purchasable}
+            onClick={handlePurchase}
           >
+            {purchaseBtnMsg}
+          </button>
+
+          <button className="mixtape-reset-button" onClick={handleRestart}>
             Start A New Mixtape
           </button>
         </div>
+
         <p>
           <strong>Note:</strong>{" "}
           <em>
@@ -239,18 +148,17 @@ function App() {
             00&apos;s Rap/Hip Hop/R&B
           </em>
         </p>
-        {showPurchaseModal && (
-          <PurchaseDialog
-            show={showPurchaseModal}
-            setShowPurchaseModal={setShowPurchaseModal}
-            tracks={[
-              ...mixtapeUIState.aSideTracks,
-              ...mixtapeUIState.bSideTracks,
-            ]}
-          />
-        )}
+
+        <PurchaseDialog
+          show={showPurchaseModal}
+          setShowPurchaseModal={setShowPurchaseModal}
+          tracks={[...mixtapeState.aSideTracks, ...mixtapeState.bSideTracks]}
+        />
       </main>
-    </MixtapeContext.Provider>
+      <footer>
+        <p>Made with ❤️, 🧠, and ☕ in Chicago, IL, USA.</p>
+      </footer>
+    </>
   );
 }
 
