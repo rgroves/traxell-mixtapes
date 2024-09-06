@@ -1326,6 +1326,24 @@
   justify-self: end;
   border-radius: 8px;
 }
+
+.ais-Hits-item,
+.ais-InfiniteHits-item,
+.ais-FrequentlyBoughtTogether-item,
+.ais-LookingSimilar-item,
+.ais-RelatedProducts-item,
+.ais-TrendingItems-item {
+  --item-shadow: light-dark();
+  align-items: center;
+  background: var(--color-primary);
+  box-shadow: 0 0 0 1px rgba(187, 188, 201, 0.05),
+    0 1px 3px 0 rgba(122, 125, 148, 0.15);
+  display: flex;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.25rem;
+}
+
 .ais-FrequentlyBoughtTogether-item:first-of-type,
 .ais-FrequentlyBoughtTogether-item:only-of-type,
 .ais-FrequentlyBoughtTogether-item:last-of-type,
@@ -1361,6 +1379,10 @@
   align-items: center;
 }
 
+.ais-PoweredBy {
+  justify-content: flex-end;
+}
+
 .ais-FrequentlyBoughtTogether *,
 .ais-RefinementList *,
 .ais-Hits * {
@@ -1368,6 +1390,13 @@
   white-space: nowrap;
   overflow: hidden;
   max-width: 100%;
+}
+
+.ais-Highlight-highlighted,
+.ais-Snippet-highlighted {
+  background-color: rgba(16, 16, 16, 0.349);
+  color: var(--text-color-primary);
+  font-style: normal;
 }
 
 @media (min-width: 768px) {

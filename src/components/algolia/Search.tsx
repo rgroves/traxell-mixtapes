@@ -1,5 +1,4 @@
-import { algAppId, algIndexName, algPublicApiKey } from "../../data/algolia";
-
+import { ReactNode, useState } from "react";
 import {
   Configure,
   CurrentRefinements,
@@ -13,14 +12,16 @@ import {
   useRefinementList,
 } from "react-instantsearch";
 import type { Hit } from "instantsearch.js";
-import { ReactNode } from "react";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
-import MixtapeBuilderHeader from "../MixtapeBuilderHeader";
-import { type MixtapeSideLabel } from "../../data/Mixtape";
-import { forceHttps, formatSecondsToTimeDisplay } from "../../utils/general";
+import AlgoliaLogo from "./AlgoliaLogo";
 import { FacetDropdown } from "./FacetDropdown";
+import { NoResults, NoResultsBoundary } from "./NoResultsBoundary";
+import { algAppId, algIndexName, algPublicApiKey } from "../../data/algolia";
+import { forceHttps, formatSecondsToTimeDisplay } from "../../utils/general";
+import { type MixtapeSideLabel } from "../../data/Mixtape";
+import MixtapeBuilderHeader from "../MixtapeBuilderHeader";
 
-export interface ISearchResult extends Record<string, unknown> {
+export interface ISearchResult {
   image: string;
   objectID: string;
   trackNbr?: number;
@@ -63,81 +64,131 @@ export default function Search({
   lastTrackIdAdded,
   secondsRemaining,
 }: ISearchProps) {
+  const [isSearchExpanded, setIsSearchExpanded] = useState(true);
   const Hit = HitWrapper({ onClick: onResultClick });
   const Item = ItemWrapper({ onClick: onResultClick });
+  const durationFilter = `duration <= ${secondsRemaining.toString()}`;
 
   return (
-    <InstantSearch
-      future={{
-        preserveSharedStateOnUnmount: true,
+    <div
+      style={{
+        position: "relative",
+        width: "100%",
+        maxWidth: "70ch",
+        backgroundColor: "var(--color-primary)",
+        overflow: "none",
+        padding: "1rem",
       }}
-      searchClient={algoliaClient}
-      indexName={algIndexName}
-      insights={false}
     >
-      <MixtapeBuilderHeader
-        activeSide={activeSide}
-        onSideSwitch={handleSideSwitch}
-        secondsRemaining={secondsRemaining}
-      />
-      <Configure hitsPerPage={5} />
-      <MixtapeBuilderSecondsRemainingBoundary
-        secondsRemaining={secondsRemaining}
+      <InstantSearch
+        future={{
+          preserveSharedStateOnUnmount: true,
+        }}
+        searchClient={algoliaClient}
+        indexName={algIndexName}
+        insights={false}
       >
-        {lastTrackIdAdded && (
-          <FrequentlyBoughtTogether
-            objectIDs={[lastTrackIdAdded]}
-            itemComponent={Item}
-            headerComponent={() => <h3>Next Track Recommendations</h3>}
-            transformItems={(items: Hit<ISearchResult>[]) =>
-              items.filter(
-                (item: Hit<ISearchResult>) => !filterOutIds.has(item.objectID)
-              )
-            }
-          />
-        )}
-        <h3>Select A Track</h3>
-        <SearchBox
-          placeholder="Search for artist/album/song"
-          queryHook={query}
-          autoFocus={true}
+        <Configure hitsPerPage={5} filters={durationFilter} />
+
+        <MixtapeBuilderHeader
+          activeSide={activeSide}
+          onSideSwitch={handleSideSwitch}
+          secondsRemaining={secondsRemaining}
         />
+        <MixtapeBuilderSecondsRemainingBoundary
+          secondsRemaining={secondsRemaining}
+        >
+          <details
+            style={{
+              padding: ".5rem",
+              marginBlockStart: ".5rem",
+            }}
+            open={isSearchExpanded}
+          >
+            <summary
+              onClick={(event) => {
+                event.preventDefault();
+                setIsSearchExpanded((prev) => !prev);
+              }}
+            >
+              Expand/Collapse Search
+            </summary>
 
-        <CurrentRefinements />
-
-        <div className="search-panel__filters">
-          <ArtistRefinementListBoundary attribute="artist">
-            <FacetDropdown closeOnChange={closeOnChange}>
-              <RefinementList
-                attribute="artist"
-                searchable={true}
-                searchablePlaceholder="Filter by artist"
+            {lastTrackIdAdded && (
+              <FrequentlyBoughtTogether
+                objectIDs={[lastTrackIdAdded]}
+                itemComponent={Item}
+                headerComponent={() => <h3>Next Track Recommendations</h3>}
+                transformItems={(items: Hit<ISearchResult>[]) =>
+                  items.filter(
+                    (item: Hit<ISearchResult>) =>
+                      !filterOutIds.has(item.objectID)
+                  )
+                }
+                queryParameters={{ filters: durationFilter }}
+                emptyComponent={() => (
+                  <>
+                    <h3>Next Track Recommendations</h3>
+                    <p>No recommendations available</p>
+                  </>
+                )}
               />
-            </FacetDropdown>
-          </ArtistRefinementListBoundary>
+            )}
 
-          <AlbumRefinementListBoundary attribute="album">
-            <FacetDropdown closeOnChange={closeOnChange}>
-              <RefinementList
-                searchablePlaceholder="Filter by album"
-                attribute="album"
-                searchable={true}
+            <h3>Select A Track</h3>
+
+            <SearchBox
+              placeholder="Search for artist/album/song"
+              queryHook={query}
+              autoFocus={true}
+            />
+
+            <div className="ais-PoweredBy">
+              <span className="ais-PoweredBy-text">Search by </span>
+              <AlgoliaLogo />
+            </div>
+
+            <CurrentRefinements />
+
+            <NoResultsBoundary fallback={<NoResults />}>
+              <div className="search-panel__filters">
+                <ArtistRefinementListBoundary attribute="artist">
+                  <FacetDropdown closeOnChange={closeOnChange}>
+                    <RefinementList
+                      attribute="artist"
+                      searchable={true}
+                      searchablePlaceholder="Filter by artist"
+                    />
+                  </FacetDropdown>
+                </ArtistRefinementListBoundary>
+
+                <AlbumRefinementListBoundary attribute="album">
+                  <FacetDropdown closeOnChange={closeOnChange}>
+                    <RefinementList
+                      searchablePlaceholder="Filter by album"
+                      attribute="album"
+                      searchable={true}
+                    />
+                  </FacetDropdown>
+                </AlbumRefinementListBoundary>
+              </div>
+
+              <Hits
+                hitComponent={Hit}
+                transformItems={(items: Hit<ISearchResult>[]) =>
+                  items.filter(
+                    (item: Hit<ISearchResult>) =>
+                      !filterOutIds.has(item.objectID)
+                  )
+                }
               />
-            </FacetDropdown>
-          </AlbumRefinementListBoundary>
-        </div>
 
-        <Hits
-          hitComponent={Hit}
-          transformItems={(items: Hit<ISearchResult>[]) =>
-            items.filter(
-              (item: Hit<ISearchResult>) => !filterOutIds.has(item.objectID)
-            )
-          }
-        />
-        <Pagination />
-      </MixtapeBuilderSecondsRemainingBoundary>
-    </InstantSearch>
+              <Pagination />
+            </NoResultsBoundary>
+          </details>
+        </MixtapeBuilderSecondsRemainingBoundary>
+      </InstantSearch>
+    </div>
   );
 }
 
@@ -192,7 +243,6 @@ function HitWrapper({
             textWrap: "balance",
             margin: 0,
             padding: 0,
-            width: "100%",
           }}
         >
           {result.image ? (
@@ -206,6 +256,7 @@ function HitWrapper({
                 padding: 0,
                 alignContent: "center",
                 border: "1px solid var(--color-accent-primary)",
+                textWrap: "wrap",
               }}
             >
               No Cover Image Available
@@ -264,7 +315,19 @@ function ItemWrapper({
           {item.image ? (
             <img src={forceHttps(item.image)} height={75} width={75} />
           ) : (
-            "No Cover Image Available"
+            <p
+              style={{
+                margin: 0,
+                width: "75px",
+                height: "75px",
+                padding: 0,
+                alignContent: "center",
+                border: "1px solid var(--color-accent-primary)",
+                textWrap: "wrap",
+              }}
+            >
+              No Cover Image Available
+            </p>
           )}
           <div
             style={{

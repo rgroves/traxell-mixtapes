@@ -17,6 +17,11 @@ footer {
 .button-controls {
   display: flex;
   flex-direction: column;
+  margin-block-end: 1rem;
+}
+
+.purchase-button:disabled[disabled] {
+  color: var(--text-color-secondary);
 }
 
 .purchase-button:not(:disabled) {
@@ -32,7 +37,7 @@ footer {
 .mixtape-reset-button {
   align-self: stretch;
   background-color: var(--button-color-secondary);
-  color: var(--text-color-secondary);
+  color: var(--text-color-primary);
   margin: 0.5rem 0 0;
 }
 

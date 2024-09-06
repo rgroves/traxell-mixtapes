@@ -25,9 +25,7 @@ export interface ITrackAddedStatus {
   reason: string;
 }
 
-const DEFAULT_TITLE = `Awesome Mix Vol. 1`;
 const MINUTES_30_IN_SECONDS = 60 * 30;
-// TODO need to better handle tape duation (ensure both sides same length)
 const DEFAULT_TAPE_SIDE_LENGTH_IN_SECONDS = MINUTES_30_IN_SECONDS;
 const UNKNOWN = "Unknown";
 
@@ -139,7 +137,7 @@ class MixtapeSide {
 }
 
 class Mixtape {
-  readonly title: string;
+  title: string;
   _lastRecordedOnSide: MixtapeSideLabel;
   _aSide: MixtapeSide;
   _bSide: MixtapeSide;
@@ -148,9 +146,9 @@ class Mixtape {
   _lastTrackIdAdded: string;
   _id: string;
 
-  constructor(title?: string) {
+  constructor(title: string) {
     this._id = crypto.randomUUID();
-    this.title = title ?? DEFAULT_TITLE;
+    this.title = title;
     this._aSide = new MixtapeSide("A", DEFAULT_TAPE_SIDE_LENGTH_IN_SECONDS);
     this._bSide = new MixtapeSide("B", DEFAULT_TAPE_SIDE_LENGTH_IN_SECONDS);
     this._totalLength =
@@ -190,24 +188,20 @@ class Mixtape {
 
   addNextTrack(
     side: MixtapeSideLabel,
-    id: string,
-    artist: string,
-    album: string,
-    song: string,
-    duration: number
+    track: IMixtapeTrack
   ): ITrackAddedStatus {
     let addStatus: ITrackAddedStatus = {
       wasAdded: false,
       reason: "",
     };
 
-    if (!this._trackSet.has(id)) {
+    if (!this._trackSet.has(track.id)) {
       let { trackNbr } = this.getNextEmptyTrack(side);
       let recordOnSide = side;
 
       if (
         recordOnSide === "A" &&
-        !this.hasRoomForTrack(recordOnSide, duration)
+        !this.hasRoomForTrack(recordOnSide, track.duration)
       ) {
         recordOnSide = "B";
         trackNbr = this.getNextEmptyTrack(recordOnSide).trackNbr;
@@ -215,7 +209,7 @@ class Mixtape {
 
       if (
         recordOnSide === "B" &&
-        !this.hasRoomForTrack(recordOnSide, duration)
+        !this.hasRoomForTrack(recordOnSide, track.duration)
       ) {
         addStatus.reason = "No room for track";
         // No room on either side so set this back to the original side to keep
@@ -223,20 +217,20 @@ class Mixtape {
         recordOnSide = side;
       } else {
         addStatus = this.getSide(recordOnSide).addTrack(
-          id,
+          track.id,
           trackNbr,
-          artist,
-          album,
-          song,
-          duration
+          track.artist,
+          track.album,
+          track.song,
+          track.duration
         );
       }
 
       this._lastRecordedOnSide = recordOnSide;
 
       if (addStatus.wasAdded) {
-        this._trackSet.add(id);
-        this._lastTrackIdAdded = id;
+        this._trackSet.add(track.id);
+        this._lastTrackIdAdded = track.id;
       }
     } else {
       addStatus.reason = "Song is already on tape.";

@@ -39,7 +39,7 @@ export function forceHttps(url: string) {
 import { Children, isValidElement, ReactNode } from "react";
 
 export function cx(
-  ...classNames: Array<string | number | boolean | undefined | null>
+  ...classNames: (string | number | boolean | undefined | null)[]
 ) {
   return classNames.filter(Boolean).join(" ");
 }
@@ -51,6 +51,7 @@ export function capitalize(value: string) {
 
 export function getFirstChildPropValue(
   children: ReactNode,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   propNameCb: (props: any) => string
 ): string | string[] | undefined {
   let propValue = undefined;
@@ -59,6 +60,7 @@ export function getFirstChildPropValue(
     if (!isValidElement(element)) return;
     const propName = propNameCb(element.props);
     if (propName in element.props) {
+      // eslint-disable-next-line  @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
       propValue = element.props[propName];
       return;
     }

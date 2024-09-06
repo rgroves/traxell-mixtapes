@@ -8,6 +8,7 @@
 @import "./components/MixtapeTrackList.css" layer(components);
 @import "./components/MixtapeBuilderHeader.css" layer(components);
 @import "./components/PurchaseDialog.css" layer(components);
+@import "./components/StartPanel.css" layer(components);
 
 @layer base {
   :root {
@@ -21,6 +22,7 @@
       var(--pencil-black)
     );
     --text-color-primary: light-dark(var(--pencil-black), var(--paper-white));
+    --text-color-secondary: light-dark(var(--paper-white), var(--pencil-black));
     --button-color-primary: light-dark(rgb(18, 174, 18), rgb(0, 79, 0));
     --button-color-secondary: light-dark(rgb(255, 50, 50), rgb(180, 0, 0));
     --button-color-primary--disabled: #aaa;

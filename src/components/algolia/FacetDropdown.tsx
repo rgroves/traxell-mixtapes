@@ -26,24 +26,24 @@ import { capitalize, cx, getFirstChildPropValue } from "../../utils/general";
 import "./FacetDropdown.css";
 
 export type DropdownProps = PropsWithChildren<{
-  buttonText?: string | ((options: DropdownButtonTextOptions) => string);
-  classNames?: Partial<DropdownClassNames>;
+  buttonText?: string | ((options: IDropdownButtonTextOptions) => string);
+  classNames?: Partial<IDropdownClassNames>;
   closeOnChange?: boolean | (() => boolean);
 }>;
 
-export type DropdownButtonTextOptions = {
+export interface IDropdownButtonTextOptions {
   results: SearchResults;
   uiState: UiState;
   refinements: CurrentRefinementsConnectorParamsRefinement[];
-};
+}
 
-export type DropdownClassNames = {
+export interface IDropdownClassNames {
   root: string;
   button: string;
   buttonRefined: string;
   closeButton: string;
   mobileTitle: string;
-};
+}
 
 type MiddlewareProps = Pick<DropdownProps, "closeOnChange"> & {
   isOpened: boolean;
@@ -55,7 +55,7 @@ function getAttributeRefinements(
   items: CurrentRefinementsRenderState["items"]
 ) {
   const item = items.find((item) => item.attribute === attribute);
-  return item?.refinements || [];
+  return item?.refinements ?? [];
 }
 
 function DropdownMiddleware({
@@ -70,7 +70,7 @@ function DropdownMiddleware({
       onStateChange() {
         const shouldCloseOnChange =
           closeOnChange === true ||
-          (typeof closeOnChange === "function" && closeOnChange() === true);
+          (typeof closeOnChange === "function" && closeOnChange());
 
         // Close the dropdown if it's opened and `closeOnChange` is true
         if (isOpened && shouldCloseOnChange) {
@@ -99,7 +99,9 @@ export function FacetDropdown({
   const panelRef = useRef(null);
 
   // Close the dropdown when click outside or press the Escape key
-  const close = useCallback(() => setIsOpened(false), []);
+  const close = useCallback(() => {
+    setIsOpened(false);
+  }, []);
   useCloseDropdown(panelRef, close, isOpened);
 
   // Prevent scrolling on mobile when the dropdown is opened
@@ -131,7 +133,7 @@ export function FacetDropdown({
     text = buttonText({ results, uiState, refinements });
   } else if (typeof attribute === "string") {
     text = isRefined
-      ? `${capitalize(attribute)} (${refinements.length})`
+      ? `${capitalize(attribute)} (${refinements.length.toString()})`
       : capitalize(attribute);
   }
 
@@ -146,7 +148,9 @@ export function FacetDropdown({
         isDisabled && "ais-Dropdown-button--disabled"
       )}
       disabled={isDisabled}
-      onClick={() => setIsOpened((opened) => !opened)}
+      onClick={() => {
+        setIsOpened((opened) => !opened);
+      }}
     >
       {text}
     </button>

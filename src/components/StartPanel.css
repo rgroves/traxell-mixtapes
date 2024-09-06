@@ -1,0 +1,19 @@
+.start-form__input {
+  line-height: 1.5rem;
+  margin-right: 0.5rem;
+}
+
+.start-form__submit-btn {
+  vertical-align: middle;
+  line-height: 1.5rem;
+  margin: 0;
+  padding: 0.15rem 0.5rem;
+}
+
+.start-form__submit-btn:disabled[disabled] {
+  color: var(--text-color-secondary);
+}
+
+.start-form__submit-btn:not(:disabled) {
+  background-color: var(--button-color-primary);
+}

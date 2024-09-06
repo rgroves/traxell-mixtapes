@@ -1,5 +1,4 @@
 import { MixtapeSideLabel } from "../data/Mixtape";
-import AlgoliaLogo from "./algolia/AlgoliaLogo";
 import { formatSecondsToTimeDisplay } from "../utils/general";
 
 interface IMixtapeBuilderHeaderProps {
@@ -17,6 +16,9 @@ export default function MixtapeBuilderHeader({
 
   return (
     <div className="mixtape-builder-header">
+      <div className="mixtape-builder-header__time-remaining">
+        Time Remaining: {timeRemaining}
+      </div>
       <button
         className="mixtape-builder-header__side-switcher"
         onClick={onSideSwitch}
@@ -29,12 +31,6 @@ export default function MixtapeBuilderHeader({
         )}{" "}
         Side
       </button>
-      <div className="mixtape-builder-header__time-remaining">
-        Time Remaining: {timeRemaining}
-      </div>
-      <div className="mixtape-builder-header__powered-by-msg">
-        Search powered by <AlgoliaLogo />
-      </div>
     </div>
   );
 }

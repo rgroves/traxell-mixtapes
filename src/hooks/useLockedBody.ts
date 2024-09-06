@@ -18,7 +18,7 @@ export function useLockedBody(locked = false) {
 
     // Avoid width reflow
     if (scrollBarWidth) {
-      document.body.style.paddingRight = `${scrollBarWidth}px`;
+      document.body.style.paddingRight = `${scrollBarWidth.toString()}px`;
     }
 
     return () => {

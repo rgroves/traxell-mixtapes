@@ -45,6 +45,7 @@
   margin-top: 0.5rem;
   margin-right: 0.5rem;
   background-color: var(--color-primary);
+  max-width: 70ch;
 }
 
 .ais-Dropdown .ais-Panel-header {
@@ -80,7 +81,7 @@
     position: fixed;
     inset: 0;
     margin: 0;
-    background: #fff;
+    background: var(--color-primary);
     padding-bottom: 4rem;
     overflow-y: auto;
   }

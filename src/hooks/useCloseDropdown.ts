@@ -3,7 +3,7 @@ import { RefObject, useEffect } from "react";
 export function useCloseDropdown<T extends HTMLElement = HTMLElement>(
   ref: RefObject<T>,
   handler: () => void,
-  enabled: boolean = true
+  enabled = true
 ) {
   useEffect(() => {
     if (!enabled) return;
